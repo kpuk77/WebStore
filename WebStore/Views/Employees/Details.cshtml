@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WebStore.Models.Employee>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        td {
+            border: 1px solid black
+        }
+
+        table {
+            border: 1px solid black
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сотрудники</title>
+</head>
+
+<body>
+<a href="/">На главную</a>
+<a href="/employees">К списку</a>
+<table>
+    <tr>
+        <td>#</td>
+        <td>Имя</td>
+        <td>Фамилия</td>
+        <td>Отчество</td>
+        <td>Номер мед. страховки</td>
+        <td>Дата трудоустройства</td>
+    </tr>
+
+    @foreach (var e in Model)
+    {
+        <tr>
+            <td>@e.Id</td>
+            <td>@e.Name</td>
+            <td>@e.LastName</td>
+            <td>@e.MiddleName</td>
+            <td>@e.MIN</td>
+            <td>@e.EmploymentDate</td>
+        </tr>
+    }
+</table>
+</body>
+
+</html>

@@ -7,18 +7,10 @@ namespace WebStore.Controllers
     {
         private IConfiguration _Configuration { get; }
 
-        public HomeController(IConfiguration configuration)
-        {
-            _Configuration = configuration;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public HomeController(IConfiguration configuration) => _Configuration = configuration;
 
-        public IActionResult SecondAction()
-        {
-            return Content(_Configuration["Greetings"]);
-        }
+        public IActionResult Index() => View();
+
+        public IActionResult SecondAction() => Content(_Configuration["Greetings"]);
     }
 }
