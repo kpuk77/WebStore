@@ -28,7 +28,6 @@ namespace WebStore.Controllers
                     __Rand.Next(1, 20),
                     __Rand.Next(10, 19),
                     __Rand.Next(60), 0)
-                
             })
         );
 
@@ -36,10 +35,9 @@ namespace WebStore.Controllers
 
         public IActionResult Details(int? id)
         {
-            if (id is null || id > __Employees.Max(i => i.Id))
-                return Content("Сотрудник не найден");
-
-            var employee = __Employees.Where(i => i.Id == id);
+            var employee = __Employees.FirstOrDefault(i => i.Id == id);
+            if (employee is null)
+                return NotFound();
 
             return View(employee);
         }
