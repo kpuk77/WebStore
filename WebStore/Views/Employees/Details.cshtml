@@ -1,24 +1,25 @@
 ﻿@model Employee
 
 <div class="container">
-	<table class="table">
-		<tr>
-			<td>#</td>
-			<td>Имя</td>
-			<td>Фамилия</td>
-			<td>Отчество</td>
-			<td>Номер мед. страховки</td>
+    <table class="table">
+        <tr>
+            <td>#</td>
+            <td>Имя</td>
+            <td>Фамилия</td>
+            <td>Отчество</td>
+            <td>Номер мед. страховки</td>
             <td>Дата трудоустройства</td>
             <td></td>
-		</tr>
-		<tr>
-			<td>@Model.Id</td>
-			<td>@Model.Name</td>
-			<td>@Model.LastName</td>
-			<td>@Model.MiddleName</td>
-			<td>@Model.MIN</td>
+        </tr>
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.Name</td>
+            <td>@Model.LastName</td>
+            <td>@Model.MiddleName</td>
+            <td>@Model.MIN</td>
             <td>@Model.EmploymentDate</td>
             <td><a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a></td>
-		</tr>
+        </tr>
     </table>
+    <a asp-action="Index">Вернуться к списку</a>
 </div>
