@@ -8,7 +8,8 @@
 			<td>Фамилия</td>
 			<td>Отчество</td>
 			<td>Номер мед. страховки</td>
-			<td>Дата трудоустройства</td>
+            <td>Дата трудоустройства</td>
+            <td></td>
 		</tr>
 		<tr>
 			<td>@Model.Id</td>
@@ -16,7 +17,8 @@
 			<td>@Model.LastName</td>
 			<td>@Model.MiddleName</td>
 			<td>@Model.MIN</td>
-			<td>@Model.EmploymentDate</td>
+            <td>@Model.EmploymentDate</td>
+            <td><a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a></td>
 		</tr>
     </table>
 </div>

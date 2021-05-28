@@ -36,9 +36,9 @@ namespace WebStore
                     "employees",
                     "{controller=Employees}/{action=Index}/{id?}");
 
-                endpoints.MapControllerRoute(
-                    "errors",
-                    "{controller=Errors}/{action=Index}/{id!})");
+                //endpoints.MapControllerRoute(
+                //    "errors",
+                //    "{controller=Errors}/{action=Index}/{id!})");
             });
         }
     }
