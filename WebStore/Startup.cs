@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Services;
+using WebStore.Services.Interfaces;
 
 namespace WebStore
 {
@@ -12,8 +14,11 @@ namespace WebStore
 
         public Startup(IConfiguration Configuration) => this.Configuration = Configuration;
 
-        public void ConfigureServices(IServiceCollection services) => 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
             services.AddControllersWithViews();
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
