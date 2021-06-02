@@ -32,7 +32,7 @@ namespace WebStore.Controllers
                 return View(new EmployeeViewModel());
 
             var employee = _Employees.Get((int)id);
-
+            
             if (employee is null)
                 return NotFound();
 
@@ -53,6 +53,9 @@ namespace WebStore.Controllers
         [HttpPost]
         public IActionResult Edit(EmployeeViewModel employeeModel)
         {
+            if (!ModelState.IsValid)
+                return View(employeeModel);
+
             var employee = new Employee
             {
                 Id = employeeModel.Id,
