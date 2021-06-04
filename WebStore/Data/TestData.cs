@@ -30,25 +30,39 @@ namespace WebStore.Data
             })
         );
 
-        public static List<Section> Sections { get; } = new 
-            (
-                Enumerable.Range(1, 10).Select(s => new Section
-                {
-                    Id = s,
-                    Name = $"Секция-{s}",
-                    Order = __Rand.Next(1, 30),
-                    ParentId = s > 3 ? (__Rand.Next(2) == 0 ? null : __Rand.Next(1, 4)) : null
-                })
-            );
+        public static List<Section> Sections { get; } = new
+        (
+            Enumerable.Range(1, 10).Select(s => new Section
+            {
+                Id = s,
+                Name = $"Секция-{s}",
+                Order = __Rand.Next(1, 30),
+                ParentId = s > 3 ? (__Rand.Next(2) == 0 ? null : __Rand.Next(1, 4)) : null
+            })
+        );
 
         public static List<Brand> Brands { get; } = new
-            (
-                Enumerable.Range(1, 10).Select(b => new Brand
-                {
-                    Id = b,
-                    Name = $"Брэнд-{b}",
-                    Order = __Rand.Next(30)
-                })
-            );
+        (
+            Enumerable.Range(1, 10).Select(b => new Brand
+            {
+                Id = b,
+                Name = $"Брэнд-{b}",
+                Order = __Rand.Next(30)
+            })
+        );
+
+        public static List<Product> Products { get; } = new
+        (
+            Enumerable.Range(1, 90).Select(p => new Product
+            {
+                Id = p,
+                Name = $"Продукт-{p}",
+                BrandId = __Rand.Next(2) == 1 ? __Rand.Next(1, Brands.Count) : null,
+                Order = __Rand.Next(1, 10),
+                Price = __Rand.Next(250, 15999),
+                SectionId = __Rand.Next(1, Sections.Count),
+                ImageUrl = $"/images/shop/product{__Rand.Next(1, 13)}.jpg"
+            })
+        );
     }
 }
