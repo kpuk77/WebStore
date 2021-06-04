@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using WebStore.Domain.Entities;
 using WebStore.Models;
 
 namespace WebStore.Data
@@ -28,5 +29,26 @@ namespace WebStore.Data
                     __Rand.Next(60), 0)
             })
         );
+
+        public static List<Section> Sections { get; } = new 
+            (
+                Enumerable.Range(1, 10).Select(s => new Section
+                {
+                    Id = s,
+                    Name = $"Секция-{s}",
+                    Order = __Rand.Next(1, 30),
+                    ParentId = s > 3 ? (__Rand.Next(2) == 0 ? null : __Rand.Next(1, 4)) : null
+                })
+            );
+
+        public static List<Brand> Brands { get; } = new
+            (
+                Enumerable.Range(1, 10).Select(b => new Brand
+                {
+                    Id = b,
+                    Name = $"Брэнд-{b}",
+                    Order = __Rand.Next(30)
+                })
+            );
     }
 }

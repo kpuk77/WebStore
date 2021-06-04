@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebStore.Models
 {
@@ -19,6 +17,5 @@ namespace WebStore.Models
         public int MIN { get; set; }    //  Medical Insurance Number
 
         public DateTime EmploymentDate { get; set; }
-
     }
 }

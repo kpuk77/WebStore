@@ -36,16 +36,7 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            var viewModel = new EmployeeViewModel
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                LastName = employee.LastName,
-                MiddleName = employee.MiddleName,
-                Age = employee.Age,
-                MIN = employee.MIN,
-                EmploymentDate = employee.EmploymentDate
-            };
+            var viewModel = EmployeeToViewModel(employee);
 
             return View(viewModel);
         }
@@ -56,16 +47,7 @@ namespace WebStore.Controllers
             if (!ModelState.IsValid)
                 return View(employeeModel);
 
-            var employee = new Employee
-            {
-                Id = employeeModel.Id,
-                Name = employeeModel.Name,
-                LastName = employeeModel.LastName,
-                MiddleName = employeeModel.MiddleName,
-                Age = employeeModel.Age,
-                MIN = employeeModel.MIN,
-                EmploymentDate = employeeModel.EmploymentDate
-            };
+            var employee = ViewModelToEmployee(employeeModel);
 
             if (employeeModel.Id == 0)
                 _Employees.Add(employee);
@@ -84,16 +66,7 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            var employeeModel = new EmployeeViewModel()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                LastName = employee.LastName,
-                MiddleName = employee.MiddleName,
-                Age = employee.Age,
-                MIN = employee.MIN,
-                EmploymentDate = employee.EmploymentDate
-            };
+            var employeeModel = EmployeeToViewModel(employee);
 
             return View(employeeModel);
         }
@@ -105,5 +78,38 @@ namespace WebStore.Controllers
 
             return RedirectToAction("Index");
         }
+
+        private Employee ViewModelToEmployee(EmployeeViewModel viewModel)
+        {
+            var employee = new Employee
+            {
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                LastName = viewModel.LastName,
+                MiddleName = viewModel.MiddleName,
+                Age = viewModel.Age,
+                MIN = viewModel.MIN,
+                EmploymentDate = viewModel.EmploymentDate
+            };
+
+            return employee;
+        }
+
+        private EmployeeViewModel EmployeeToViewModel(Employee employee)
+        {
+            var viewModel = new EmployeeViewModel()
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                LastName = employee.LastName,
+                MiddleName = employee.MiddleName,
+                Age = employee.Age,
+                MIN = employee.MIN,
+                EmploymentDate = employee.EmploymentDate
+            };
+
+            return viewModel;
+        }
     }
 }
+

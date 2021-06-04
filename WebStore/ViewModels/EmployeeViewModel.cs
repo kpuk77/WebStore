@@ -8,14 +8,18 @@ namespace WebStore.ViewModels
 {
     public class EmployeeViewModel
     {
+        private const string _REG_EX = @"([А-ЯЁ][а-яё]+)|([A-Z][a-z]+)";
+
         [HiddenInput]
         public int Id { get; set; }
 
         [DisplayName("Имя")]
+        [RegularExpression(_REG_EX, ErrorMessage = "Имя, должно быть написано с использованием кириллицы или латиницы.")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Введите имя")]
         public string Name { get; set; }
 
         [DisplayName("Фамилия")]
+        [RegularExpression(_REG_EX, ErrorMessage = "Фамилия, должна быть написана с использованием кириллицы или латиницы.")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Введите фамилию")]
         public string LastName { get; set; }
 
