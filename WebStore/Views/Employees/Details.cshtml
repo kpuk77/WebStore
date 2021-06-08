@@ -1,49 +1,25 @@
-﻿@model IEnumerable<WebStore.Models.Employee>
+﻿@model Employee
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <style>
-        td {
-            border: 1px solid black
-        }
-
-        table {
-            border: 1px solid black
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сотрудники</title>
-</head>
-
-<body>
-<a href="/">На главную</a>
-<a href="/employees">К списку</a>
-<table>
-    <tr>
-        <td>#</td>
-        <td>Имя</td>
-        <td>Фамилия</td>
-        <td>Отчество</td>
-        <td>Номер мед. страховки</td>
-        <td>Дата трудоустройства</td>
-    </tr>
-
-    @foreach (var e in Model)
-    {
+<div class="container">
+    <table class="table">
         <tr>
-            <td>@e.Id</td>
-            <td>@e.Name</td>
-            <td>@e.LastName</td>
-            <td>@e.MiddleName</td>
-            <td>@e.MIN</td>
-            <td>@e.EmploymentDate</td>
+            <td>#</td>
+            <td>Имя</td>
+            <td>Фамилия</td>
+            <td>Отчество</td>
+            <td>Номер мед. страховки</td>
+            <td>Дата трудоустройства</td>
+            <td></td>
         </tr>
-    }
-</table>
-</body>
-
-</html>
+        <tr>
+            <td>@Model.Id</td>
+            <td>@Model.Name</td>
+            <td>@Model.LastName</td>
+            <td>@Model.MiddleName</td>
+            <td>@Model.MIN</td>
+            <td>@Model.EmploymentDate</td>
+            <td><a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a></td>
+        </tr>
+    </table>
+    <a asp-action="Index">Вернуться к списку</a>
+</div>

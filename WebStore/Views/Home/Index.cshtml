@@ -1,15 +1,16 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿<partial name="Partial/_Slider"/>
+<section>
+	<div class="container">
+		<div class="row">
+            <div class="col-sm-3">
+                <partial name="Partial/_LeftSidebar"/>
+            </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная</title>
-</head>
-
-<body>
-    <a href="/Employees">Cписок сотрудников</a>
-</body>
-
-</html>
+            <div class="col-sm-9 padding-right">
+				<partial name="Partial/_FeaturesItems"/>
+				<partial name="Partial/_CategoryTab"/>
+				<partial name="Partial/_RecommendedItems"/>
+			</div>
+		</div>
+	</div>
+</section>

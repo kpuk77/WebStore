@@ -12,18 +12,19 @@ namespace WebStore
 
         public Startup(IConfiguration Configuration) => this.Configuration = Configuration;
 
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) => 
             services.AddControllersWithViews();
-        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment()) 
+            if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+            //app.UseExceptionHandler("/Errors");
 
             app.UseRouting();
-            
+
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapDefaultControllerRoute();
@@ -34,6 +35,10 @@ namespace WebStore
                 endpoints.MapControllerRoute(
                     "employees",
                     "{controller=Employees}/{action=Index}/{id?}");
+
+                //endpoints.MapControllerRoute(
+                //    "errors",
+                //    "{controller=Errors}/{action=Index}/{id!})");
             });
         }
     }
