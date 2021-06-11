@@ -31,12 +31,12 @@ namespace WebStore
 
             services.AddTransient<IEmployeesData, InMemoryEmployeesData>();
 
-            if (_Configuration["DataSource"] == "Db")
+            if (_Configuration["DataSource"].ToLower() == "db")
             {
                 services.AddTransient<WebStoreDBInitializer>();
                 services.AddScoped<IProductData, SqlProductData>();
             }
-            else if (_Configuration["DataSource"] == "Memory")
+            else if (_Configuration["DataSource"].ToLower() == "memory")
                 services.AddSingleton<IProductData, InMemoryProductData>();
             else
                 throw new Exception("Не выбран источник данных.");
@@ -44,7 +44,7 @@ namespace WebStore
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
-            if (_Configuration["DataSource"] == "Db")
+            if (_Configuration["DataSource"].ToLower() == "db")
                 using (var scope = services.CreateScope())
                     scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
 
