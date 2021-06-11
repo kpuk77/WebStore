@@ -31,12 +31,12 @@ namespace WebStore
 
             services.AddTransient<IEmployeesData, InMemoryEmployeesData>();
 
-            if (_Configuration["DataSource"] == "Db")
+            if (_Configuration["DataSource"].ToLower() == "db")
             {
                 services.AddTransient<WebStoreDBInitializer>();
                 services.AddScoped<IProductData, SqlProductData>();
             }
-            else if (_Configuration["DataSource"] == "Memory")
+            else if (_Configuration["DataSource"].ToLower() == "memory")
                 services.AddSingleton<IProductData, InMemoryProductData>();
             else
                 throw new Exception("Не выбран источник данных.");
