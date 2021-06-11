@@ -22,7 +22,8 @@ namespace WebStore.Data
 
         public void Initialize()
         {
-            _Db.Database.EnsureDeleted();
+            //_Db.Database.EnsureDeleted();
+
             _Logger.LogInformation("---> Инициализация БД...");
             var timer = Stopwatch.StartNew();
 
@@ -42,7 +43,7 @@ namespace WebStore.Data
             }
             catch (Exception e)
             {
-                _Logger.LogError(e, "Ошибка инициализации товаров в БД.");
+                _Logger.LogError(e, "---> Ошибка инициализации товаров в БД.");
                 throw;
             }
 
