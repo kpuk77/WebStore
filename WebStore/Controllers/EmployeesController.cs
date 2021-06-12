@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using WebStore.Models;
+using Microsoft.Extensions.Logging;
+using WebStore.Infrastructure.Mapping;
 using WebStore.Services.Interfaces;
 using WebStore.ViewModels;
 
@@ -9,9 +9,13 @@ namespace WebStore.Controllers
     public class EmployeesController : Controller
     {
         private readonly IEmployeesData _Employees;
+        private readonly ILogger<EmployeesController> _Logger;
 
-        public EmployeesController(IEmployeesData employees) =>
+        public EmployeesController(IEmployeesData employees, ILogger<EmployeesController> logger)
+        {
             _Employees = employees;
+            _Logger = logger;
+        }
 
         public IActionResult Index() => View(_Employees.GetList());
 
@@ -24,7 +28,12 @@ namespace WebStore.Controllers
             return View(employee);
         }
 
-        public IActionResult Create() => View("Edit", new EmployeeViewModel());
+        public IActionResult Create()
+        {
+            _Logger.LogInformation($"Добавление нового сотрудника");
+
+            return View("Edit", new EmployeeViewModel());
+        }
 
         public IActionResult Edit(int? id)
         {
@@ -36,23 +45,25 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            var viewModel = EmployeeToViewModel(employee);
+            _Logger.LogInformation($"Редактирование сотрудника {employee.Name} с id: {employee.Id}");
 
-            return View(viewModel);
+            return View(employee.ToViewModel());
         }
 
         [HttpPost]
-        public IActionResult Edit(EmployeeViewModel employeeModel)
+        public IActionResult Edit(EmployeeViewModel model)
         {
             if (!ModelState.IsValid)
-                return View(employeeModel);
+                return View(model);
 
-            var employee = ViewModelToEmployee(employeeModel);
+            var employee = model.ToModel();
 
-            if (employeeModel.Id == 0)
+            if (model.Id == 0)
                 _Employees.Add(employee);
             else
                 _Employees.Update(employee);
+
+            _Logger.LogInformation($"Сохранение изменений: {employee.Name} id: {employee.Id}");
 
             return RedirectToAction("Index");
         }
@@ -66,50 +77,21 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            var employeeModel = EmployeeToViewModel(employee);
+            _Logger.LogInformation($"Запрос на удаление сотрудника {employee.Name} с id: {employee.Id}");
 
-            return View(employeeModel);
+            return View(employee.ToViewModel());
         }
 
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
         {
+            var employee = _Employees.Get(id);
+
+            _Logger.LogInformation($"Удаление сотрудника {employee.Name} с id: {employee.Id}");
+
             _Employees.Delete(id);
 
             return RedirectToAction("Index");
         }
-
-        private Employee ViewModelToEmployee(EmployeeViewModel viewModel)
-        {
-            var employee = new Employee
-            {
-                Id = viewModel.Id,
-                Name = viewModel.Name,
-                LastName = viewModel.LastName,
-                MiddleName = viewModel.MiddleName,
-                Age = viewModel.Age,
-                MIN = viewModel.MIN,
-                EmploymentDate = viewModel.EmploymentDate
-            };
-
-            return employee;
-        }
-
-        private EmployeeViewModel EmployeeToViewModel(Employee employee)
-        {
-            var viewModel = new EmployeeViewModel()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                LastName = employee.LastName,
-                MiddleName = employee.MiddleName,
-                Age = employee.Age,
-                MIN = employee.MIN,
-                EmploymentDate = employee.EmploymentDate
-            };
-
-            return viewModel;
-        }
     }
 }
-
