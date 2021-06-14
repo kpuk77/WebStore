@@ -58,7 +58,7 @@ namespace WebStore
             {
                 opt.Cookie.Name = "WebStore38r";
                 opt.Cookie.HttpOnly = true;
-                //opt.Cookie.Expiration = TimeSpan.FromDays(7);     //  Ошибка
+
                 opt.ExpireTimeSpan = TimeSpan.FromDays(7);
 
                 opt.LoginPath = "/Account/Login";
