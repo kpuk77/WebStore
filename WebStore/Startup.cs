@@ -46,7 +46,7 @@ namespace WebStore
                 opt.Password.RequiredUniqueChars = 3;
 #endif
 
-                opt.User.RequireUniqueEmail = true;
+                opt.User.RequireUniqueEmail = false;
                 opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
                 opt.Lockout.AllowedForNewUsers = false;
@@ -57,8 +57,9 @@ namespace WebStore
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.Cookie.Name = "WebStore38r";
-                opt.Cookie.Expiration = TimeSpan.FromDays(7);
                 opt.Cookie.HttpOnly = true;
+                //opt.Cookie.Expiration = TimeSpan.FromDays(7);     //  Ошибка
+                opt.ExpireTimeSpan = TimeSpan.FromDays(7);
 
                 opt.LoginPath = "/Account/Login";
                 opt.LogoutPath = "/Account/Logout";
