@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using WebStore.Domain.Entities.Identity;
 using WebStore.ViewModels;
 
@@ -52,11 +52,10 @@ namespace WebStore.Controllers
 
             if (result.Succeeded)
                 return LocalRedirect(model.ReturnUrl ?? "/");
-
+            
             ModelState.AddModelError("", "Ошибка в логине или пароле");
 
             return View(model);
-
         }
 
         public async Task<IActionResult> Logout()
