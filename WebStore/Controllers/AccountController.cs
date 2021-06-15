@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+using System.Linq;
+using System.Threading.Tasks;
+
 using WebStore.Domain.Entities.Identity;
 using WebStore.ViewModels;
 
@@ -12,11 +14,13 @@ namespace WebStore.Controllers
     {
         private readonly UserManager<User> _UserManager;
         private readonly SignInManager<User> _SignInManager;
+        private readonly ILogger<AccountController> _Logger;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
         {
             _UserManager = userManager;
             _SignInManager = signInManager;
+            _Logger = logger;
         }
         public IActionResult Register() => View(new RegisterUserViewModel());
 
@@ -31,6 +35,7 @@ namespace WebStore.Controllers
 
             if (result.Succeeded)
             {
+                _Logger.LogInformation("Регистрация нового пользователя {0} с id: {1}", user.UserName, user.Id);
                 await _SignInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
@@ -38,22 +43,55 @@ namespace WebStore.Controllers
             foreach (var error in result.Errors)
                 ModelState.TryAddModelError("", error.Description);
 
+            _Logger.LogError(string.Join(" ", result.Errors.Select(e => e.Description)));
+
             return View(model);
         }
 
         public IActionResult Login(string returnUrl) => View(new LoginViewModel { ReturnUrl = returnUrl });
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            #region Попытка lockout - не вышло  //TODO: разобраться
+
+            //if (!ModelState.IsValid) return View(model);
+
+            //if (_UserManager.FindByNameAsync(model.UserName).Result is { } user)
+            //{
+            //    if (_UserManager.IsLockedOutAsync(user).Result)
+            //    {
+            //        _Logger.LogWarning("Неа");
+            //        ViewBag.ErrorMessage = "What?";
+            //        ModelState.AddModelError("", "Заблочен!");
+            //        return View(model);
+            //    }
+
+            //    var result =
+            //        await _SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+
+            //    if (result.Succeeded)
+            //        return LocalRedirect(model.ReturnUrl ?? "/");
+            //}
+
+            //ModelState.AddModelError("", "Ошибка в логине или пароле");
+
+            //_Logger.LogWarning("Ошибка входа пользователя {0}", model.UserName);
+            //return View(model);
+
+            #endregion
+
             if (!ModelState.IsValid) return View(model);
 
-            var result = await _SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
+            var result =
+                    await _SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
             if (result.Succeeded)
                 return LocalRedirect(model.ReturnUrl ?? "/");
-            
+
             ModelState.AddModelError("", "Ошибка в логине или пароле");
+
+            _Logger.LogWarning("Ошибка входа пользователя {0}", model.UserName);
 
             return View(model);
         }
