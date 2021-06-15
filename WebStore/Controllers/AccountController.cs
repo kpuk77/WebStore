@@ -35,7 +35,7 @@ namespace WebStore.Controllers
 
             if (result.Succeeded)
             {
-                _Logger.LogInformation("Регистрация нового пользователя {0} с id: {1}", user.UserName, user.Id);
+                _Logger.LogInformation("---> Регистрация нового пользователя {0} с id: {1}", user.UserName, user.Id);
                 await _SignInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
@@ -43,7 +43,7 @@ namespace WebStore.Controllers
             foreach (var error in result.Errors)
                 ModelState.TryAddModelError("", error.Description);
 
-            _Logger.LogError(string.Join(" ", result.Errors.Select(e => e.Description)));
+            _Logger.LogError(string.Join("\n", result.Errors.Select(e => "---> " + e.Description)));
 
             return View(model);
         }
@@ -61,8 +61,7 @@ namespace WebStore.Controllers
             //{
             //    if (_UserManager.IsLockedOutAsync(user).Result)
             //    {
-            //        _Logger.LogWarning("Неа");
-            //        ViewBag.ErrorMessage = "What?";
+            //        _Logger.LogWarning("---> Неа");
             //        ModelState.AddModelError("", "Заблочен!");
             //        return View(model);
             //    }
@@ -76,8 +75,23 @@ namespace WebStore.Controllers
 
             //ModelState.AddModelError("", "Ошибка в логине или пароле");
 
-            //_Logger.LogWarning("Ошибка входа пользователя {0}", model.UserName);
+            //_Logger.LogWarning("---> Ошибка входа пользователя {0}", model.UserName);
             //return View(model);
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //if (await _UserManager.FindByNameAsync(model.UserName) is { } user)
+            //{
+            //    await _UserManager.AccessFailedAsync(user);
+
+            //    if (await _UserManager.IsLockedOutAsync(user))
+            //    {
+            //        _Logger.LogWarning("---> Неа!");
+            //        ViewBag.ErrorMessage = "What?";
+            //        ModelState.AddModelError("","Блок!");
+            //        return View(model);
+            //    }
+            //}
 
             #endregion
 
@@ -91,7 +105,7 @@ namespace WebStore.Controllers
 
             ModelState.AddModelError("", "Ошибка в логине или пароле");
 
-            _Logger.LogWarning("Ошибка входа пользователя {0}", model.UserName);
+            _Logger.LogWarning("---> Ошибка входа пользователя {0}", model.UserName);
 
             return View(model);
         }
