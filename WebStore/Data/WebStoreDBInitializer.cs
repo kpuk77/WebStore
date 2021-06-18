@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using WebStore.DAL.Context;
+using WebStore.Domain.Entities.Identity;
 
 namespace WebStore.Data
 {
@@ -13,11 +16,16 @@ namespace WebStore.Data
     {
         private readonly WebStoreDB _Db;
         private readonly ILogger<WebStoreDBInitializer> _Logger;
+        private readonly UserManager<User> _UserManager;
+        private readonly RoleManager<Role> _RoleManager;
 
-        public WebStoreDBInitializer(WebStoreDB db, ILogger<WebStoreDBInitializer> logger)
+        public WebStoreDBInitializer(WebStoreDB db, ILogger<WebStoreDBInitializer> logger,
+            UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _Db = db;
             _Logger = logger;
+            _UserManager = userManager;
+            _RoleManager = roleManager;
         }
 
         public void Initialize()
@@ -44,6 +52,16 @@ namespace WebStore.Data
             catch (Exception e)
             {
                 _Logger.LogError(e, "---> Ошибка инициализации товаров в БД.");
+                throw;
+            }
+
+            try
+            {
+                InitializeIdentityAsync().Wait();
+            }
+            catch (Exception e)
+            {
+                _Logger.LogError(e, "---> Ошибка инициализации системы Identity");
                 throw;
             }
 
@@ -77,6 +95,44 @@ namespace WebStore.Data
             }
         }
 
+        private async Task InitializeIdentityAsync()
+        {
+            async Task CheckRole(string role)
+            {
+                if (!await _RoleManager.RoleExistsAsync(role))
+                {
+                    _Logger.LogWarning($"Роль {role} отсутствует.");
+                    await _RoleManager.CreateAsync(new Role { Name = role });
+                    _Logger.LogInformation($"Роль {role} успешно создана.");
+                }
+            }
+
+            await CheckRole(Role.Administrators);
+            await CheckRole(Role.Users);
+
+            if (await _UserManager.FindByNameAsync(User.Administrator) is null)
+            {
+                _Logger.LogWarning($"Пользователь {User.Administrator} не найден.");
+
+                var admin = new User { UserName = User.Administrator };
+
+                var result = await _UserManager.CreateAsync(admin, User.DefaultAdminPassword);
+
+                if (result.Succeeded)
+                {
+                    await _UserManager.AddToRoleAsync(admin, Role.Administrators);
+                    _Logger.LogInformation($"Пользователь {admin.UserName} успешно создан и наделен правами {Role.Administrators}");
+                }
+                else
+                {
+                    var errors = string.Join(", ", result.Errors);
+
+                    _Logger.LogError(errors);
+                    throw new InvalidOperationException(errors);
+                }
+            }
+        }
+
         private void ConvertData()
         {
             _Logger.LogInformation("---> Исправление данных...");
@@ -85,7 +141,7 @@ namespace WebStore.Data
 
             var sections = TestData.Sections.ToDictionary(s => s.Id);
             var brands = TestData.Brands.ToDictionary(b => b.Id);
-            
+
             foreach (var section in TestData.Sections)
             {
                 section.Id = 0;
@@ -96,7 +152,7 @@ namespace WebStore.Data
                     section.ParentId = null;
                 }
             }
-            
+
             foreach (var product in TestData.Products)
             {
                 product.Id = 0;
@@ -109,10 +165,10 @@ namespace WebStore.Data
                     product.BrandId = null;
                 }
             }
-            
-            foreach (var brand in TestData.Brands) 
+
+            foreach (var brand in TestData.Brands)
                 brand.Id = 0;
-            
+
             _Logger.LogInformation($"---> Исправление данных завершено за {timer.Elapsed.TotalSeconds} c.");
         }
     }

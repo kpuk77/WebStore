@@ -36,6 +36,7 @@ namespace WebStore.Controllers
             if (result.Succeeded)
             {
                 _Logger.LogInformation("---> Регистрация нового пользователя {0} с id: {1}", user.UserName, user.Id);
+                await _UserManager.AddToRoleAsync(user, Role.Users);
                 await _SignInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
