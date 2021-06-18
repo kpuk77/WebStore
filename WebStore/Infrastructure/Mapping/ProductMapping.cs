@@ -15,7 +15,9 @@ namespace WebStore.Infrastructure.Mapping
                     Id = product.Id,
                     Name = product.Name,
                     ImageUrl = product.ImageUrl,
-                    Price = product.Price
+                    Price = product.Price,
+                    Brand = product.Brand?.Name,
+                    Section = product.Section.Name
                 };
 
         public static IEnumerable<ProductViewModel> ToViewModels(this IEnumerable<Product> products) => products.Select(p => p.ToViewModel());

@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Mapping;
 using WebStore.Services.Interfaces;
 using WebStore.ViewModels;
 
 namespace WebStore.Controllers
 {
+    [Authorize(Roles = Role.Administrators)]    //  Ибо нефиг простым смертным смотреть на список сотрудников :)
     public class EmployeesController : Controller
     {
         private readonly IEmployeesData _Employees;

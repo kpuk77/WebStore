@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WebStore.DAL.Context;
 using WebStore.Domain;
@@ -25,7 +26,9 @@ namespace WebStore.Services.InSQL
 
         public IEnumerable<Product> GetProducts(ProductFilter filter = null)
         {
-            IQueryable<Product> query = _Db.Products;
+            IQueryable<Product> query = _Db.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Section);
 
             if (filter?.SectionId is { } sectionId)
                 query = query.Where(p => p.SectionId == sectionId);
@@ -35,5 +38,7 @@ namespace WebStore.Services.InSQL
 
             return query;
         }
+
+        public Product GetProductById(int id) => _Db.Products.SingleOrDefault(p => p.Id == id);
     }
 }

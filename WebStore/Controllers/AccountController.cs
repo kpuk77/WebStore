@@ -4,12 +4,13 @@ using Microsoft.Extensions.Logging;
 
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 using WebStore.Domain.Entities.Identity;
 using WebStore.ViewModels;
 
 namespace WebStore.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _UserManager;
@@ -111,6 +112,7 @@ namespace WebStore.Controllers
             return View(model);
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _SignInManager.SignOutAsync();

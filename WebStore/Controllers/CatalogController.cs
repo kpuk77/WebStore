@@ -32,5 +32,15 @@ namespace WebStore.Controllers
                 Products = products.OrderBy(p => p.Order).ToViewModels()
             });
         }
+
+        public IActionResult Details(int id)
+        {
+            var product = _ProductData.GetProductById(id);
+
+            if (product is null)
+                return NotFound();
+
+            return View(product.ToViewModel());
+        }
     }
 }
