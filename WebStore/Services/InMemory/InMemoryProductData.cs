@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using WebStore.Data;
 using WebStore.Domain;
 using WebStore.Domain.Entities;
@@ -17,11 +18,16 @@ namespace WebStore.Services.InMemory
         {
             IEnumerable<Product> query = TestData.Products;
 
-            if (filter?.SectionId is { } sectionId)
-                query = query.Where(p => p.SectionId == sectionId);
+            if (filter?.Ids.Length > 0)
+                query = query.Where(p => filter.Ids.Contains(p.Id));
+            else
+            {
+                if (filter?.SectionId is { } sectionId)
+                    query = query.Where(p => p.SectionId == sectionId);
 
-            if (filter?.BrandId is { } brandId)
-                query = query.Where(p => p.BrandId == brandId);
+                if (filter?.BrandId is { } brandId)
+                    query = query.Where(p => p.BrandId == brandId);
+            }
 
             return query;
         }
