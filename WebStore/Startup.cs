@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using WebStore.DAL.Context;
 using WebStore.Data;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Services.InCookies;
 using WebStore.Services.InMemory;
 using WebStore.Services.InSQL;
 using WebStore.Services.Interfaces;
@@ -34,6 +35,8 @@ namespace WebStore
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebStoreDB>()
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<ICartService, InCookiesCartService>();
 
             services.Configure<IdentityOptions>(opt =>
             {
