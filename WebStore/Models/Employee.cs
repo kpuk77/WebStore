@@ -17,6 +17,5 @@ namespace WebStore.Models
         public int MIN { get; set; }    //  Medical Insurance Number
 
         public DateTime EmploymentDate { get; set; }
-
     }
 }
