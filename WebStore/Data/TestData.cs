@@ -53,7 +53,7 @@ namespace WebStore.Data
 
         public static List<Product> Products { get; } = new
         (
-            Enumerable.Range(1, 90).Select(p => new Product
+            Enumerable.Range(1, 300).Select(p => new Product
             {
                 Id = p,
                 Name = $"Продукт-{p}",

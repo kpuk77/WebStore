@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using WebStore.Infrastructure.Mapping;
 using WebStore.Services.Interfaces;
 using WebStore.ViewModels;
 
@@ -21,13 +22,7 @@ namespace WebStore.Controllers
         {
             var productData = _ProductData.GetProducts()
                 .Take(9)
-                .Select(p => new ProductViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Price = p.Price,
-                    ImageUrl = p.ImageUrl
-                });
+                .Select(p => p.ToViewModel());
 
             return View(productData);
         }
