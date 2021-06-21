@@ -3,17 +3,23 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore.Services;
+using WebStore.Services.Interfaces;
 
 namespace WebStore
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration _Configuration { get; }
 
-        public Startup(IConfiguration Configuration) => this.Configuration = Configuration;
+        public Startup(IConfiguration Configuration) => this._Configuration = Configuration;
 
-        public void ConfigureServices(IServiceCollection services) => 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
             services.AddControllersWithViews();
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

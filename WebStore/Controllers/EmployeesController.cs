@@ -1,64 +1,104 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using WebStore.Models;
+using WebStore.Services.Interfaces;
+using WebStore.ViewModels;
 
 namespace WebStore.Controllers
 {
     public class EmployeesController : Controller
     {
-        private static readonly Random __Rand = new Random();
+        private readonly IEmployeesData _Employees;
 
-        private static readonly List<Employee> __Employees = new
-        (
-            Enumerable.Range(1, 100).Select(i => new Employee
-            {
-                Id = i,
-                Age = __Rand.Next(18, 55),
-                Name = $"Имя-{i}",
-                LastName = $"Фамилия-{i}",
-                MiddleName = $"Отчество-{i}",
-                MIN = __Rand.Next(10000, 90000),
-                EmploymentDate = new DateTime(
-                    __Rand.Next(1999, 2020),
-                    __Rand.Next(1, 13),
-                    __Rand.Next(1, 20),
-                    __Rand.Next(10, 19),
-                    __Rand.Next(60), 0)
-            })
-        );
+        public EmployeesController(IEmployeesData employees) =>
+            _Employees = employees;
 
-        public IActionResult Index() => View(__Employees);
+        public IActionResult Index() => View(_Employees.GetList());
 
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            var employee = __Employees.FirstOrDefault(i => i.Id == id);
+            var employee = _Employees.Get(id);
             if (employee is null)
                 return NotFound();
 
             return View(employee);
         }
 
+        public IActionResult Create() => View("Edit", new EmployeeViewModel());
+
         public IActionResult Edit(int? id)
         {
-            if (id != null)
+            if (id is null)
+                return View(new EmployeeViewModel());
+
+            var employee = _Employees.Get((int)id);
+
+            if (employee is null)
+                return NotFound();
+
+            var viewModel = new EmployeeViewModel
             {
-                var employee = __Employees.FirstOrDefault(i => i.Id == id);
+                Id = employee.Id,
+                Name = employee.Name,
+                LastName = employee.LastName,
+                MiddleName = employee.MiddleName,
+                Age = employee.Age,
+                MIN = employee.MIN,
+                EmploymentDate = employee.EmploymentDate
+            };
 
-                if (employee != null)
-                    return View(employee);
-            }
-
-            return NotFound();
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(Employee employee)
+        public IActionResult Edit(EmployeeViewModel employeeModel)
         {
-            __Employees[employee.Id] = employee;
+            var employee = new Employee
+            {
+                Id = employeeModel.Id,
+                Name = employeeModel.Name,
+                LastName = employeeModel.LastName,
+                MiddleName = employeeModel.MiddleName,
+                Age = employeeModel.Age,
+                MIN = employeeModel.MIN,
+                EmploymentDate = employeeModel.EmploymentDate
+            };
+
+            if (employeeModel.Id == 0)
+                _Employees.Add(employee);
+            else
+                _Employees.Update(employee);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+            var employee = _Employees.Get(id);
+
+            if (employee is null)
+                return NotFound();
+
+            var employeeModel = new EmployeeViewModel()
+            {
+                Id = employee.Id,
+                Name = employee.Name,
+                LastName = employee.LastName,
+                MiddleName = employee.MiddleName,
+                Age = employee.Age,
+                MIN = employee.MIN,
+                EmploymentDate = employee.EmploymentDate
+            };
+
+            return View(employeeModel);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _Employees.Delete(id);
 
             return RedirectToAction("Index");
         }

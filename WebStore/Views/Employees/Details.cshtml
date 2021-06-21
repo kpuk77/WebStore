@@ -1,4 +1,7 @@
 ﻿@model Employee
+@{
+    ViewBag.Title = $"{Model.Name} {Model.LastName}";
+}
 
 <div class="container">
     <table class="table">
@@ -18,7 +21,8 @@
             <td>@Model.MiddleName</td>
             <td>@Model.MIN</td>
             <td>@Model.EmploymentDate</td>
-            <td><a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a></td>
+            <td><a asp-controller="Employees" asp-action="Edit" asp-route-id="@Model.Id"><span class="fa fa-edit"></span></a>
+                 | <a asp-controller="Employees" asp-action="Delete" asp-route-id="@Model.Id"><span class="fa fa-trash-o alert-danger"></span></a></td>
         </tr>
     </table>
     <a asp-action="Index">Вернуться к списку</a>
