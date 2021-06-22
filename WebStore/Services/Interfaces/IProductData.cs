@@ -13,5 +13,13 @@ namespace WebStore.Services.Interfaces
         IEnumerable<Product> GetProducts(ProductFilter filter = null);
 
         Product GetProductById(int id);
+
+        int Add(Product product);
+
+        bool Remove(Product product);
+
+        bool RemoveById(int id);
+
+        void Update(Product product);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using WebStore.Data;
@@ -33,5 +34,43 @@ namespace WebStore.Services.InMemory
         }
 
         public Product GetProductById(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);
+
+        public int Add(Product product)
+        {
+            var maxId = TestData.Products.Max(p => p.Id);
+
+            if (product is null)
+                throw new ArgumentNullException();
+
+            if (product.Id <= 0)
+                product.Id = ++maxId;
+
+            TestData.Products.Add(product);
+
+            return product.Id;
+        }
+
+        public bool Remove(Product product)
+        {
+            if (product is null)
+                throw new ArgumentNullException();
+
+            if (!TestData.Products.Contains(product))
+                return false;
+
+            return TestData.Products.Remove(product);
+        }
+
+        public bool RemoveById(int id)
+        {
+            var product = GetProductById(id);
+
+            return Remove(product);
+        }
+
+        public void Update(Product product)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -48,5 +49,57 @@ namespace WebStore.Services.InSQL
             .Include(p => p.Brand)
             .Include(p => p.Section)
             .SingleOrDefault(p => p.Id == id);
+
+        public int Add(Product product)
+        {
+            if (product is null)
+                throw new NullReferenceException(nameof(product));
+
+            _Db.Entry(product).State = EntityState.Added;
+
+            _Db.SaveChanges();
+
+            return product.Id;
+        }
+
+        public bool Remove(Product product)
+        {
+            if (product is null)
+                throw new NullReferenceException(nameof(product));
+
+            if (!_Db.Products.Contains(product))
+                return false;
+
+            _Db.Remove(product).State = EntityState.Deleted;
+
+            _Db.SaveChanges();
+
+            return true;
+        }
+
+        public bool RemoveById(int id)
+        {
+            if (GetProductById(id) is not { } product)
+                return false;
+
+            _Db.Remove(product).State = EntityState.Deleted;
+
+            _Db.SaveChanges();
+
+            return true;
+        }
+
+        public void Update(Product product)
+        {
+            if (product is null)
+                throw new ArgumentNullException(nameof(product));
+
+            if (!_Db.Products.Contains(product))
+                return;
+
+            _Db.Update(product);
+
+            _Db.SaveChanges();
+        }
     }
 }

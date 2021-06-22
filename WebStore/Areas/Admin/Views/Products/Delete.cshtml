@@ -1,0 +1,17 @@
+﻿@model WebStore.ViewModels.ProductViewModel
+@{
+    ViewBag.Title = $"Удаление {Model.Name}";
+}
+
+<div class="container">
+    <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id">
+        <div class="modal-dialog" style="border: 1px solid darkgray; padding: 15px; border-radius: 7px">
+            <h1 class="h1 modal-header">Удаление @Model.Name</h1>
+            <p class="modal-body">Вы уверены что хотите удалить @Model.Name ?</p>
+            <div class="modal-footer">
+                <input type="submit" value="Удалить" class="btn btn-danger" />
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn bg-primary">Назад</a>
+            </div>
+        </div>
+    </form>
+</div>
