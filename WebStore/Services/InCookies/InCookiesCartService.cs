@@ -117,7 +117,7 @@ namespace WebStore.Services.InCookies
             Cart = cart;
         }
 
-        public CartViewModel GetViewMode()
+        public CartViewModel GetViewModel()
         {
             var products = _ProductData.GetProducts(new ProductFilter
             {

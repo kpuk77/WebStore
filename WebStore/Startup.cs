@@ -74,6 +74,7 @@ namespace WebStore
             if (_Configuration["DataSource"].ToLower() == "db")
             {
                 services.AddTransient<WebStoreDBInitializer>();
+                services.AddScoped<IOrderService, SqlOrderData>();
                 services.AddScoped<IProductData, SqlProductData>();
             }
             else if (_Configuration["DataSource"].ToLower() == "memory")

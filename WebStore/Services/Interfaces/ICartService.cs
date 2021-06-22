@@ -12,6 +12,6 @@ namespace WebStore.Services.Interfaces
 
         void Clear();
 
-        CartViewModel GetViewMode();
+        CartViewModel GetViewModel();
     }
 }
