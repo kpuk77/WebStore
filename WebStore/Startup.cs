@@ -28,8 +28,18 @@ namespace WebStore
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
 
-            services.AddDbContext<WebStoreDB>(opt =>
-                opt.UseSqlServer(_Configuration.GetConnectionString("MSSqlServer")));
+            var dbSource = _Configuration["DBSource"];
+            switch (dbSource)
+            {
+                case "SQLite":
+                    services.AddDbContext<WebStoreDB>(opt => opt.UseSqlite(_Configuration.GetConnectionString("SQLite"),
+                        o => o.MigrationsAssembly("WebStore.DAL.Sqlite")));
+                    break;
+                case "MSSqlServer":
+                    services.AddDbContext<WebStoreDB>(opt =>
+                        opt.UseSqlServer(_Configuration.GetConnectionString("MSSqlServer")));
+                    break;
+            }
 
             services.AddTransient<IEmployeesData, InMemoryEmployeesData>();
             services.AddIdentity<User, Role>()

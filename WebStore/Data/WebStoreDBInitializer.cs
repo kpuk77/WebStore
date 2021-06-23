@@ -35,7 +35,6 @@ namespace WebStore.Data
             _Logger.LogInformation("---> Инициализация БД...");
             var timer = Stopwatch.StartNew();
 
-
             if (_Db.Database.GetPendingMigrations().Any())
             {
                 _Logger.LogInformation("---> Миграция БД...");
