@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using WebStore.DAL.Context;
 using WebStore.Domain;
 using WebStore.Domain.Entities;
@@ -53,11 +55,16 @@ namespace WebStore.Services.InSQL
         public int Add(Product product)
         {
             if (product is null)
+            {
+                _Logger.LogError("---> Ошибка создания товара");
                 throw new NullReferenceException(nameof(product));
+            }
 
             _Db.Entry(product).State = EntityState.Added;
 
             _Db.SaveChanges();
+
+            _Logger.LogInformation($"---> Добавление товара: {product.Name}");
 
             return product.Id;
         }
@@ -65,14 +72,22 @@ namespace WebStore.Services.InSQL
         public bool Remove(Product product)
         {
             if (product is null)
+            {
+                _Logger.LogError("---> Ошибка удаления товара");
                 throw new NullReferenceException(nameof(product));
+            }
 
             if (!_Db.Products.Contains(product))
+            {
+                _Logger.LogWarning("---> Ошибка удаления товара");
                 return false;
+            }
 
             _Db.Remove(product).State = EntityState.Deleted;
 
             _Db.SaveChanges();
+
+            _Logger.LogInformation($"---> Товар удален {product.Name}");
 
             return true;
         }
@@ -80,11 +95,16 @@ namespace WebStore.Services.InSQL
         public bool RemoveById(int id)
         {
             if (GetProductById(id) is not { } product)
+            {
+                _Logger.LogError("---> Ошибка удаления товара");
                 return false;
+            }
 
             _Db.Remove(product).State = EntityState.Deleted;
 
             _Db.SaveChanges();
+
+            _Logger.LogInformation($"---> Товар удален {product.Name}");
 
             return true;
         }
@@ -92,14 +112,22 @@ namespace WebStore.Services.InSQL
         public void Update(Product product)
         {
             if (product is null)
+            {
+                _Logger.LogError($"---> Ошибка изменения товара {product.Name}");
                 throw new ArgumentNullException(nameof(product));
+            }
 
             if (!_Db.Products.Contains(product))
+            {
+                _Logger.LogWarning($"---> Ошибка изменения товара {product.Name}");
                 return;
+            }
 
             _Db.Update(product);
 
             _Db.SaveChanges();
+
+            _Logger.LogInformation($"---> Товар {product.Name} изменен");
         }
     }
 }

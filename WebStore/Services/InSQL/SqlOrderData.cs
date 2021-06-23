@@ -46,10 +46,13 @@ namespace WebStore.Services.InSQL
         {
             var user = await _UserManager.FindByNameAsync(userName);
             if (user is null)
+            {
+                _Logger.LogWarning("---> Ошибка создания заказа");
                 throw new InvalidOperationException($"Пользователь {userName} не найден");
+            }
 
             await using var transaction = await _Db.Database.BeginTransactionAsync();
-
+            _Logger.LogInformation("---> Начало транзакции...");
             var order = new Order
             {
                 User = user,
@@ -80,7 +83,7 @@ namespace WebStore.Services.InSQL
             await _Db.SaveChangesAsync();
 
             await transaction.CommitAsync();
-
+            _Logger.LogInformation("---> ...успешное завершение транзакции.");
             return order;
         }
     }
