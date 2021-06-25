@@ -30,7 +30,7 @@ namespace WebStore.Controllers
 
         public IActionResult Create()
         {
-            _Logger.LogInformation($"Добавление нового сотрудника");
+            _Logger.LogInformation($"---> Добавление нового сотрудника");
 
             return View("Edit", new EmployeeViewModel());
         }
@@ -45,7 +45,7 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            _Logger.LogInformation($"Редактирование сотрудника {employee.Name} с id: {employee.Id}");
+            _Logger.LogInformation($"---> Редактирование сотрудника {employee.Name} с id: {employee.Id}");
 
             return View(employee.ToViewModel());
         }
@@ -63,7 +63,7 @@ namespace WebStore.Controllers
             else
                 _Employees.Update(employee);
 
-            _Logger.LogInformation($"Сохранение изменений: {employee.Name} id: {employee.Id}");
+            _Logger.LogInformation($"---> Сохранение изменений: {employee.Name} id: {employee.Id}");
 
             return RedirectToAction("Index");
         }
@@ -77,7 +77,7 @@ namespace WebStore.Controllers
             if (employee is null)
                 return NotFound();
 
-            _Logger.LogInformation($"Запрос на удаление сотрудника {employee.Name} с id: {employee.Id}");
+            _Logger.LogInformation($"---> Запрос на удаление сотрудника {employee.Name} с id: {employee.Id}");
 
             return View(employee.ToViewModel());
         }
@@ -87,7 +87,7 @@ namespace WebStore.Controllers
         {
             var employee = _Employees.Get(id);
 
-            _Logger.LogInformation($"Удаление сотрудника {employee.Name} с id: {employee.Id}");
+            _Logger.LogInformation($"---> Удаление сотрудника {employee.Name} с id: {employee.Id}");
 
             _Employees.Delete(id);
 
