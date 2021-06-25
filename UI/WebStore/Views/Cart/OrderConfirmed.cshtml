@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Заказ готов!";
+}
+
+<div class="container">
+    <div class="modal-dialog" style="border: 1px solid darkgray; padding: 15px; border-radius: 7px">
+        <h2 class="modal-header">@ViewBag.Title</h2>
+        <p class="modal-body">Заказ @ViewBag.OrderId готов, ждите звонка.</p>
+        <div class="modal-footer">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-info">На главную</a>
+        </div>
+    </div>
+</div>

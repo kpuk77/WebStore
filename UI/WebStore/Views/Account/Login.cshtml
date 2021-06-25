@@ -1,0 +1,32 @@
+﻿@model WebStore.Domain.ViewModels.LoginViewModel
+@{
+    ViewBag.Title = "Вход в аккаунт";
+}
+
+<section id="form">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1">
+                <div class="login-form">
+                    <h2>@ViewBag.Title</h2>
+
+                    <form asp-action="Login" asp-antiforgery="true" asp-route-returnUrl="@Model.ReturnUrl">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input asp-for="UserName" placeholder="Логин"/>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+
+                        <input asp-for="Password" placeholder="Пароль"/>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <span>
+                            <input asp-for="RememberMe" class="checkbox">
+                            Запомнить меня
+                        </span>
+
+                        <button type="submit" class="btn btn-default">Вход</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
