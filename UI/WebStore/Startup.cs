@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Identity;
 using WebStore.DAL.Context;
 using WebStore.Data;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Interfaces.Services;
 using WebStore.Services.InCookies;
 using WebStore.Services.InMemory;
 using WebStore.Services.InSQL;
-using WebStore.Services.Interfaces;
 
 namespace WebStore
 {
