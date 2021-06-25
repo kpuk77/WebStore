@@ -37,7 +37,7 @@ namespace WebStore.WebAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("remove/{index}")]
         public IActionResult Delete(int index)
         {
             if (index > __Values.Count || index < 0)
