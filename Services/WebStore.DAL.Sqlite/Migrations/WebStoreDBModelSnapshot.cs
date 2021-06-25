@@ -250,6 +250,7 @@ namespace WebStore.DAL.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -306,7 +307,7 @@ namespace WebStore.DAL.Sqlite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SectionId")
                         .HasColumnType("INTEGER");
@@ -398,7 +399,9 @@ namespace WebStore.DAL.Sqlite.Migrations
                 {
                     b.HasOne("WebStore.Domain.Entities.Identity.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
