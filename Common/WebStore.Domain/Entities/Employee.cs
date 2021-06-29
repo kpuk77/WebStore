@@ -13,6 +13,6 @@ namespace WebStore.Domain.Entities
 
         public int MIN { get; set; }    //  Medical Insurance Number
 
-        public DateTime EmploymentDate { get; set; }
+        public DateTime EmploymentDate { get; set; } = DateTime.Now;
     }
 }

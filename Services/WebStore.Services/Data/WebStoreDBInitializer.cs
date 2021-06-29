@@ -2,10 +2,13 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using WebStore.DAL.Context;
+using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 
 namespace WebStore.Services.Data
@@ -62,6 +65,16 @@ namespace WebStore.Services.Data
                 throw;
             }
 
+            try
+            {
+                InitializeEmployees();
+            }
+            catch (Exception e)
+            {
+                _Logger.LogError(e, "---> Ошибка инициализации сотрудников в БД.");
+                throw;
+            }
+
             _Logger.LogInformation($"---> Инициализация БД завершена за {timer.Elapsed.TotalSeconds} c.");
         }
 
@@ -76,7 +89,7 @@ namespace WebStore.Services.Data
 
             _Logger.LogInformation("---> Инициализация товаров...");
 
-            ConvertData();
+            ConvertProductData();
 
             using (_Db.Database.BeginTransaction())
             {
@@ -130,7 +143,29 @@ namespace WebStore.Services.Data
             }
         }
 
-        private void ConvertData()
+        private void InitializeEmployees()
+        {
+            var timer = Stopwatch.StartNew();
+            if (_Db.Employees.Any())
+            {
+                _Logger.LogInformation("---> Инициализация сотрудников не требуется.");
+                return;
+            }
+
+            _Logger.LogInformation("---> Инициализация сотрудников...");
+
+            TestData.Employees.ForEach(e => e.Id = 0);
+
+            _Logger.LogInformation("---> Добавление сотрудников в БД...");
+
+            _Db.AddRange(TestData.Employees);
+            
+            _Db.SaveChanges();
+
+            _Logger.LogInformation($"---> Добавление данных в БД завершено за {timer.Elapsed.TotalSeconds} с.");
+        }
+
+        private void ConvertProductData()
         {
             _Logger.LogInformation("---> Исправление данных...");
 
