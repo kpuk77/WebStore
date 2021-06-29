@@ -8,11 +8,16 @@ using WebStore.Services.Data;
 
 namespace WebStore.Services.InMemory
 {
+    [Obsolete("Поддержка прекращена", true)]
     public class InMemoryProductData : IProductData
     {
         public IEnumerable<Section> GetSections() => TestData.Sections;
 
+        public Section GetSection(int id) => GetSections().FirstOrDefault(s => s.Id == id);
+
         public IEnumerable<Brand> GetBrands() => TestData.Brands;
+
+        public Brand GetBrand(int id) => GetBrands().FirstOrDefault(b => b.Id == id);
 
         public IEnumerable<Product> GetProducts(ProductFilter filter = null)
         {

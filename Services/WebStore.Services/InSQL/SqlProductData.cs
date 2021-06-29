@@ -24,8 +24,10 @@ namespace WebStore.Services.InSQL
         }
 
         public IEnumerable<Section> GetSections() => _Db.Sections;
+        public Section GetSection(int id) => GetSections().FirstOrDefault(s => s.Id == id);
 
         public IEnumerable<Brand> GetBrands() => _Db.Brands;
+        public Brand GetBrand(int id) => GetBrands().FirstOrDefault(b => b.Id == id);
 
         public IEnumerable<Product> GetProducts(ProductFilter filter = null)
         {

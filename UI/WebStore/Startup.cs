@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-using Microsoft.AspNetCore.Identity;
+
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestAPI;
 using WebStore.Services.Data;
 using WebStore.Services.InCookies;
-using WebStore.Services.InMemory;
 using WebStore.Services.InSQL;
 using WebStore.WebAPI.Clients.Values;
 
@@ -28,10 +28,6 @@ namespace WebStore
         public void ConfigureServices(IServiceCollection services)
         {
             var dbSource = _Configuration["DBSource"];
-
-            services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddControllersWithViews();
-
             switch (dbSource)
             {
                 case "SQLite":
@@ -43,14 +39,11 @@ namespace WebStore
                         opt.UseSqlServer(_Configuration.GetConnectionString("MSSqlServer")));
                     break;
             }
+            services.AddTransient<WebStoreDBInitializer>();
 
-            services.AddTransient<IEmployeesData, InMemoryEmployeesData>();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebStoreDB>()
                 .AddDefaultTokenProviders();
-
-            services.AddScoped<ICartService, InCookiesCartService>();
-            services.AddHttpClient<IValuesService, ValuesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
 
             services.Configure<IdentityOptions>(opt =>
             {
@@ -70,7 +63,6 @@ namespace WebStore
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
-
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.Cookie.Name = "WebStore38r";
@@ -85,23 +77,21 @@ namespace WebStore
                 opt.SlidingExpiration = true;
             });
 
-            if (_Configuration["DataSource"].ToLower() == "db")
-            {
-                services.AddTransient<WebStoreDBInitializer>();
-                services.AddScoped<IOrderService, SqlOrderData>();
-                services.AddScoped<IProductData, SqlProductData>();
-            }
-            else if (_Configuration["DataSource"].ToLower() == "memory")
-                services.AddSingleton<IProductData, InMemoryProductData>();
-            else
-                throw new Exception("Не выбран источник данных.");
+
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
+
+            services.AddScoped<IOrderService, SqlOrderData>();
+            services.AddScoped<IProductData, SqlProductData>();
+            services.AddScoped<ICartService, InCookiesCartService>();
+
+            services.AddHttpClient<IValuesService, ValuesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
-            if (_Configuration["DataSource"].ToLower() == "db")
-                using (var scope = services.CreateScope())
-                    scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
+            using (var scope = services.CreateScope())
+                scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
