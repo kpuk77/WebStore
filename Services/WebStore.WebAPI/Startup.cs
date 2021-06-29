@@ -80,7 +80,8 @@ namespace WebStore.WebAPI
             services.AddControllers();
             services.AddSwaggerGen(c =>
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebStore.WebAPI", Version = "v1" }));
-            
+
+            services.AddScoped<IEmployeesData, SqlEmployeesData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, InCookiesCartService>();
         }

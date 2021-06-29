@@ -15,6 +15,7 @@ using WebStore.Interfaces.TestAPI;
 using WebStore.Services.Data;
 using WebStore.Services.InCookies;
 using WebStore.Services.InSQL;
+using WebStore.WebAPI.Clients.Employees;
 using WebStore.WebAPI.Clients.Values;
 
 namespace WebStore
@@ -81,12 +82,13 @@ namespace WebStore
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
 
-            services.AddScoped<IEmployeesData, SqlEmployeesData>();
+            //services.AddScoped<IEmployeesData, SqlEmployeesData>();
             services.AddScoped<IOrderService, SqlOrderData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, InCookiesCartService>();
 
             services.AddHttpClient<IValuesService, ValuesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
+            services.AddHttpClient<IEmployeesData, EmployeesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
