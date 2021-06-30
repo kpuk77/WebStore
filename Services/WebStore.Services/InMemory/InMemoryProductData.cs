@@ -37,7 +37,7 @@ namespace WebStore.Services.InMemory
             return query;
         }
 
-        public Product GetProductById(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);
+        public Product GetProduct(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);
 
         public int Add(Product product)
         {
@@ -65,9 +65,9 @@ namespace WebStore.Services.InMemory
             return TestData.Products.Remove(product);
         }
 
-        public bool RemoveById(int id)
+        public bool Remove(int id)
         {
-            var product = GetProductById(id);
+            var product = GetProduct(id);
 
             return Remove(product);
         }

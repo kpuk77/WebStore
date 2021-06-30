@@ -23,7 +23,7 @@ namespace WebStore.Services.InSQL
             _Logger = logger;
         }
 
-        public IEnumerable<Section> GetSections() => _Db.Sections;
+        public IEnumerable<Section> GetSections() => _Db.Sections.Include(s => s.Products);
         public Section GetSection(int id) => GetSections().FirstOrDefault(s => s.Id == id);
 
         public IEnumerable<Brand> GetBrands() => _Db.Brands;
@@ -49,7 +49,7 @@ namespace WebStore.Services.InSQL
             return query;
         }
 
-        public Product GetProductById(int id) => _Db.Products
+        public Product GetProduct(int id) => _Db.Products
             .Include(p => p.Brand)
             .Include(p => p.Section)
             .SingleOrDefault(p => p.Id == id);
@@ -62,11 +62,11 @@ namespace WebStore.Services.InSQL
                 throw new NullReferenceException(nameof(product));
             }
 
-            _Db.Entry(product).State = EntityState.Added;
+            _Db.Add(product);
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Добавление товара: {product.Name}");
+            _Logger.LogInformation($"---> Добавление товара: {product.Name} id: {product.Id}");
 
             return product.Id;
         }
@@ -89,14 +89,14 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар удален {product.Name}");
+            _Logger.LogInformation($"---> Товар удален {product.Name} id: {product.Id}");
 
             return true;
         }
 
-        public bool RemoveById(int id)
+        public bool Remove(int id)
         {
-            if (GetProductById(id) is not { } product)
+            if (GetProduct(id) is not { } product)
             {
                 _Logger.LogError("---> Ошибка удаления товара");
                 return false;
@@ -106,7 +106,7 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар удален {product.Name}");
+            _Logger.LogInformation($"---> Товар удален {product.Name} id:{id}");
 
             return true;
         }
@@ -129,7 +129,7 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар {product.Name} изменен");
+            _Logger.LogInformation($"---> Товар {product.Name} id: {product.Id} изменен");
         }
     }
 }

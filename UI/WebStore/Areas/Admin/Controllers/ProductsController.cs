@@ -33,7 +33,7 @@ namespace WebStore.Areas.Admin.Controllers
             if (id <= 0)
                 return BadRequest();
 
-            if (_ProductData.GetProductById(id) is not { } product)
+            if (_ProductData.GetProduct(id) is not { } product)
                 return NotFound();
 
             return View(product.ToViewModel());
@@ -45,7 +45,7 @@ namespace WebStore.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var product = _ProductData.GetProductById(model.Id);
+            var product = _ProductData.GetProduct(model.Id);
 
             if (product is null)
                 return BadRequest();
@@ -69,7 +69,7 @@ namespace WebStore.Areas.Admin.Controllers
             if (id <= 0)
                 return BadRequest();
 
-            if (_ProductData.GetProductById(id) is not { } product)
+            if (_ProductData.GetProduct(id) is not { } product)
                 return NotFound();
 
             return View(product.ToViewModel());
@@ -79,9 +79,7 @@ namespace WebStore.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
         {
-            var product = _ProductData.GetProductById(id);
-
-            _ProductData.Remove(product);
+            _ProductData.Remove(id);
 
             return RedirectToAction("Index");
         }
