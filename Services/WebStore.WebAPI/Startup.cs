@@ -84,6 +84,7 @@ namespace WebStore.WebAPI
             services.AddScoped<IEmployeesData, SqlEmployeesData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, InCookiesCartService>();
+            services.AddScoped<IOrderService, SqlOrderData>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
