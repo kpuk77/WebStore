@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WebStore.Domain.DTO;
-using WebStore.Domain.Entities;
+using WebStore.Domain.DTO.Products;
 
-namespace WebStore.Services.Mapping.DTO
+namespace WebStore.Services.Mapping.DTO.Products
 {
     public static class ProductDTOMapping
     {
-        public static Product FromDTO(this ProductDTO productDTO) => productDTO is null
+        public static Domain.Entities.Product FromDTO(this ProductDTO productDTO) => productDTO is null
             ? null
-            : new Product
+            : new Domain.Entities.Product
             {
                 Id = productDTO.Id,
                 Name = productDTO.Name,
@@ -20,7 +19,7 @@ namespace WebStore.Services.Mapping.DTO
                 Section = productDTO.Section.FromDTO()
             };
 
-        public static ProductDTO ToDTO(this Product product) => product is null
+        public static ProductDTO ToDTO(this Domain.Entities.Product product) => product is null
             ? null
             : new ProductDTO()
             {
@@ -33,10 +32,10 @@ namespace WebStore.Services.Mapping.DTO
                 Section = product.Section.ToDTO()
             };
 
-        public static IEnumerable<Product> FromDTO(this IEnumerable<ProductDTO> productsDTO) =>
+        public static IEnumerable<Domain.Entities.Product> FromDTO(this IEnumerable<ProductDTO> productsDTO) =>
             productsDTO.Select(FromDTO);
 
-        public static IEnumerable<ProductDTO> ToDTO(this IEnumerable<Product> products) =>
+        public static IEnumerable<ProductDTO> ToDTO(this IEnumerable<Domain.Entities.Product> products) =>
             products.Select(ToDTO);
     }
 }

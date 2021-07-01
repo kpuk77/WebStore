@@ -4,11 +4,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 
 using WebStore.Domain;
-using WebStore.Domain.DTO;
+using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces;
 using WebStore.Interfaces.Services;
-using WebStore.Services.Mapping.DTO;
+using WebStore.Services.Mapping.DTO.Products;
 using WebStore.WebAPI.Clients.Base;
 
 namespace WebStore.WebAPI.Clients.Products

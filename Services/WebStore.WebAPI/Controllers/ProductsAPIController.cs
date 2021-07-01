@@ -4,7 +4,7 @@ using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces;
 using WebStore.Interfaces.Services;
-using WebStore.Services.Mapping.DTO;
+using WebStore.Services.Mapping.DTO.Products;
 
 namespace WebStore.WebAPI.Controllers
 {

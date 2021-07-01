@@ -1,10 +1,8 @@
-﻿using System.Collections.Immutable;
-using System.Linq;
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
+using System.Linq;
 
 using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
@@ -53,10 +51,10 @@ namespace WebStore.Areas.Admin.Controllers
             var section = _ProductData.GetSections().FirstOrDefault(s => s.Name == model.Section);
             var brand = _ProductData.GetBrands().FirstOrDefault(b => b.Name == model.Brand);
 
-            product.Name = model.Name;
-            product.Section = section ??= new Section { Name = model.Section };
-            product.Brand = brand ??= new Brand { Name = model.Brand };
-            product.ImageUrl = model.ImageUrl;
+            product.Name = model.Name.Trim();
+            product.Section = section ??= new Section { Name = model.Section.Trim() };
+            product.Brand = model.Brand is null ? null : brand ??= new Brand { Name = model.Brand.Trim() };
+            product.ImageUrl = model.ImageUrl.Trim();
             product.Price = model.Price;
 
             _ProductData.Update(product);
