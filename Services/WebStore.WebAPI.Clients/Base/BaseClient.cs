@@ -49,5 +49,23 @@ namespace WebStore.WebAPI.Clients.Base
             var response = await Http.DeleteAsync(url).ConfigureAwait(false);
             return response.EnsureSuccessStatusCode();
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        private bool _Disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_Disposed) return;
+            _Disposed = true;
+
+            if (disposing)
+            {
+
+            }
+        }
     }
 }
