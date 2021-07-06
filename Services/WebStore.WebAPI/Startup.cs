@@ -43,7 +43,7 @@ namespace WebStore.WebAPI
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<WebStoreDB>()
                 .AddDefaultTokenProviders();
-
+            
             services.Configure<IdentityOptions>(opt =>
             {
 #if DEBUG
@@ -87,8 +87,11 @@ namespace WebStore.WebAPI
             services.AddScoped<IOrderService, SqlOrderData>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
+            using (var scope = services.CreateScope())
+                scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

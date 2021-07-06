@@ -1,20 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
 
-using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestAPI;
-using WebStore.Services.Data;
 using WebStore.Services.InCookies;
 using WebStore.WebAPI.Clients.Employees;
+using WebStore.WebAPI.Clients.Identity;
 using WebStore.WebAPI.Clients.Orders;
 using WebStore.WebAPI.Clients.Products;
 using WebStore.WebAPI.Clients.Values;
@@ -29,22 +27,9 @@ namespace WebStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbSource = _Configuration["DBSource"];
-            switch (dbSource)
-            {
-                case "SQLite":
-                    services.AddDbContext<WebStoreDB>(opt => opt.UseSqlite(_Configuration.GetConnectionString("SQLite"),
-                        o => o.MigrationsAssembly("WebStore.DAL.Sqlite")));
-                    break;
-                case "MSSqlServer":
-                    services.AddDbContext<WebStoreDB>(opt =>
-                        opt.UseSqlServer(_Configuration.GetConnectionString("MSSqlServer")));
-                    break;
-            }
-            //services.AddTransient<WebStoreDBInitializer>();
-
+            
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<WebStoreDB>()
+                .AddIdentityWebStoreAPIClients()
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(opt =>
@@ -84,7 +69,7 @@ namespace WebStore
             services.AddControllersWithViews();
 
             services.AddScoped<ICartService, InCookiesCartService>();
-            
+
             services.AddHttpClient("WebStoreAPI", opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]))
                 .AddTypedClient<IValuesService, ValuesClient>()
                 .AddTypedClient<IEmployeesData, EmployeesClient>()
@@ -92,11 +77,8 @@ namespace WebStore
                 .AddTypedClient<IOrderService, OrdersClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //using (var scope = services.CreateScope())
-            //    scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
-
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
@@ -117,11 +99,6 @@ namespace WebStore
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
                     );
-
-                //endpoints.MapControllerRoute(
-                //    name: "employees",
-                //    pattern: "{controller=Employees}/{action=Index}/{id?}"
-                //    );
             });
         }
     }
