@@ -78,9 +78,9 @@ namespace WebStore
                 .AddTypedClient<IOrderService, OrdersClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, ILoggerFactory logger*/)
         {
-            logger.AddLog4Net();
+            //logger.AddLog4Net();
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();

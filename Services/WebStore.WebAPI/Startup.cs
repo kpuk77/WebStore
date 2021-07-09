@@ -88,9 +88,9 @@ namespace WebStore.WebAPI
             services.AddScoped<IOrderService, SqlOrderData>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services, ILoggerFactory logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services/*, ILoggerFactory logger*/)
         {
-            logger.AddLog4Net();
+            //logger.AddLog4Net();
 
             using (var scope = services.CreateScope())
                 scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
