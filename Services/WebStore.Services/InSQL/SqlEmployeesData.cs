@@ -27,7 +27,7 @@ namespace WebStore.Services.InSQL
         {
             if (employee is null)
             {
-                _Logger.LogError($"---> Ошибка добавления сотрудника");
+                _Logger.LogError($"Ошибка добавления сотрудника");
                 throw new ArgumentNullException(nameof(employee));
             }
 
@@ -36,7 +36,7 @@ namespace WebStore.Services.InSQL
             _Db.Add(employee);
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Сотрудник {employee.Id}: {employee.Name} добавлен");
+            _Logger.LogInformation($"Сотрудник {employee.Id}: {employee.Name} добавлен");
             return employee.Id;
         }
 
@@ -44,24 +44,24 @@ namespace WebStore.Services.InSQL
         {
             if (employee is null)
             {
-                _Logger.LogError("---> Ошибка обновления данных сотрудника");
+                _Logger.LogError("Ошибка обновления данных сотрудника");
                 throw new ArgumentNullException(nameof(employee));
             }
 
             _Db.Employees.Update(employee);
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Данные сотрудника {employee.Id}: {employee.Name} успешно изменены");
+            _Logger.LogInformation($"Данные сотрудника {employee.Id}: {employee.Name} успешно изменены");
         }
 
         public bool Delete(int id)
         {
-            _Logger.LogInformation($"---> Попытка удаления сотрудника с id: {id}");
+            _Logger.LogInformation($"Попытка удаления сотрудника с id: {id}");
             var employee = Get(id);
 
             if (employee is null)
             {
-                _Logger.LogError($"---> Ошибка удаления сотрудника {id}");
+                _Logger.LogError($"Ошибка удаления сотрудника {id}");
                 return false;
             }
 
@@ -69,7 +69,7 @@ namespace WebStore.Services.InSQL
             _Db.Remove(employee);
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Сотрудник {employee.Id}: {employee.Name} удален");
+            _Logger.LogInformation($"Сотрудник {employee.Id}: {employee.Name} удален");
 
             return true;
         }
