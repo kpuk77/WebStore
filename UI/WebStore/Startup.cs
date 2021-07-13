@@ -11,6 +11,7 @@ using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestAPI;
+using WebStore.Services;
 using WebStore.Services.InCookies;
 using WebStore.WebAPI.Clients.Employees;
 using WebStore.WebAPI.Clients.Identity;
@@ -69,7 +70,9 @@ namespace WebStore
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
 
-            services.AddScoped<ICartService, InCookiesCartService>();
+            //services.AddScoped<ICartService, InCookiesCartService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartStore, InCookiesCartStore>();
 
             services.AddHttpClient("WebStoreAPI", opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]))
                 .AddTypedClient<IValuesService, ValuesClient>()
