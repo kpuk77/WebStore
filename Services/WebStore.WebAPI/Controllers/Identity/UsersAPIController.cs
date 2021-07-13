@@ -156,7 +156,7 @@ namespace WebStore.WebAPI.Controllers.Identity
         public async Task<string> GetNormalizedEmailAsync([FromBody] User user) =>
             await _UserStore.GetNormalizedEmailAsync(user);
 
-        [HttpPost("SetNormalizedEmail/{normalizedEmail}")]
+        [HttpPost("SetNormalizedEmail/{normalizedEmail?}")]
         public async Task<string> SetNormalizedEmailAsync([FromBody] User user, string normalizedEmail)
         {
             await _UserStore.SetNormalizedEmailAsync(user, normalizedEmail);
