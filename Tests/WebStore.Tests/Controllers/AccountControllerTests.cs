@@ -148,7 +148,7 @@ namespace WebStore.Tests.Controllers
             Assert.Equal(EXPECTED_CONTROLLER, viewResult.ControllerName);
         }
 
-        [TestMethod]
+        [TestMethod]    //  Done
         public void AccessDeniedReturnsView()
         {
             var userManager = CreateMockUserManager();
