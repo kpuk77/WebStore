@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Interfaces.Services;
+using WebStore.Interfaces.TestAPI;
 using WebStore.Services.Data;
 using WebStore.Services.InCookies;
 using WebStore.Services.InMemory;
 using WebStore.Services.InSQL;
+using WebStore.WebAPI.Clients.Values;
 
 namespace WebStore
 {
@@ -25,10 +27,11 @@ namespace WebStore
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbSource = _Configuration["DBSource"];
+
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
 
-            var dbSource = _Configuration["DBSource"];
             switch (dbSource)
             {
                 case "SQLite":
@@ -47,6 +50,7 @@ namespace WebStore
                 .AddDefaultTokenProviders();
 
             services.AddScoped<ICartService, InCookiesCartService>();
+            services.AddHttpClient<IValuesService, ValuesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
 
             services.Configure<IdentityOptions>(opt =>
             {

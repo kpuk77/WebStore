@@ -1,0 +1,27 @@
+﻿@model IEnumerable<string>;
+@{
+    ViewBag.Title = "WebAPI";
+    var i = 0;
+}
+
+<div class="container">
+    <div class="popover-content">
+        <table class="table table-striped">
+            <thead class="text-info">
+            <tr>
+                <th>#</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var value in Model)
+            {
+                <tr>
+                    <td>@(i++)</td>
+                    <td>@value</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
