@@ -35,7 +35,7 @@ namespace WebStore.Controllers
 
         public IActionResult Details(int id)
         {
-            var product = _ProductData.GetProductById(id);
+            var product = _ProductData.GetProduct(id);
 
             if (product is null)
                 return NotFound();

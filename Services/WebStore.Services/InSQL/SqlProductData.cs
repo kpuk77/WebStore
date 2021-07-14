@@ -23,9 +23,11 @@ namespace WebStore.Services.InSQL
             _Logger = logger;
         }
 
-        public IEnumerable<Section> GetSections() => _Db.Sections;
+        public IEnumerable<Section> GetSections() => _Db.Sections.Include(s => s.Products);
+        public Section GetSection(int id) => GetSections().FirstOrDefault(s => s.Id == id);
 
         public IEnumerable<Brand> GetBrands() => _Db.Brands;
+        public Brand GetBrand(int id) => GetBrands().FirstOrDefault(b => b.Id == id);
 
         public IEnumerable<Product> GetProducts(ProductFilter filter = null)
         {
@@ -47,7 +49,7 @@ namespace WebStore.Services.InSQL
             return query;
         }
 
-        public Product GetProductById(int id) => _Db.Products
+        public Product GetProduct(int id) => _Db.Products
             .Include(p => p.Brand)
             .Include(p => p.Section)
             .SingleOrDefault(p => p.Id == id);
@@ -56,15 +58,15 @@ namespace WebStore.Services.InSQL
         {
             if (product is null)
             {
-                _Logger.LogError("---> Ошибка создания товара");
+                _Logger.LogError("Ошибка создания товара");
                 throw new NullReferenceException(nameof(product));
             }
 
-            _Db.Entry(product).State = EntityState.Added;
+            _Db.Add(product);
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Добавление товара: {product.Name}");
+            _Logger.LogInformation($"Добавление товара: {product.Name} id: {product.Id}");
 
             return product.Id;
         }
@@ -73,13 +75,13 @@ namespace WebStore.Services.InSQL
         {
             if (product is null)
             {
-                _Logger.LogError("---> Ошибка удаления товара");
+                _Logger.LogError("Ошибка удаления товара");
                 throw new NullReferenceException(nameof(product));
             }
 
             if (!_Db.Products.Contains(product))
             {
-                _Logger.LogWarning("---> Ошибка удаления товара");
+                _Logger.LogWarning("Ошибка удаления товара");
                 return false;
             }
 
@@ -87,16 +89,16 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар удален {product.Name}");
+            _Logger.LogInformation($"Товар удален {product.Name} id: {product.Id}");
 
             return true;
         }
 
-        public bool RemoveById(int id)
+        public bool Remove(int id)
         {
-            if (GetProductById(id) is not { } product)
+            if (GetProduct(id) is not { } product)
             {
-                _Logger.LogError("---> Ошибка удаления товара");
+                _Logger.LogError("Ошибка удаления товара");
                 return false;
             }
 
@@ -104,7 +106,7 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар удален {product.Name}");
+            _Logger.LogInformation($"Товар удален {product.Name} id:{id}");
 
             return true;
         }
@@ -113,13 +115,13 @@ namespace WebStore.Services.InSQL
         {
             if (product is null)
             {
-                _Logger.LogError($"---> Ошибка изменения товара {product.Name}");
+                _Logger.LogError($"Ошибка изменения товара {product.Name}");
                 throw new ArgumentNullException(nameof(product));
             }
 
             if (!_Db.Products.Contains(product))
             {
-                _Logger.LogWarning($"---> Ошибка изменения товара {product.Name}");
+                _Logger.LogWarning($"Ошибка изменения товара {product.Name}");
                 return;
             }
 
@@ -127,7 +129,7 @@ namespace WebStore.Services.InSQL
 
             _Db.SaveChanges();
 
-            _Logger.LogInformation($"---> Товар {product.Name} изменен");
+            _Logger.LogInformation($"Товар {product.Name} id: {product.Id} изменен");
         }
     }
 }

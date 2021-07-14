@@ -2,10 +2,13 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using WebStore.DAL.Context;
+using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 
 namespace WebStore.Services.Data
@@ -30,17 +33,17 @@ namespace WebStore.Services.Data
         {
             //_Db.Database.EnsureDeleted();
 
-            _Logger.LogInformation("---> Инициализация БД...");
+            _Logger.LogInformation("Инициализация БД...");
             var timer = Stopwatch.StartNew();
 
             if (_Db.Database.GetPendingMigrations().Any())
             {
-                _Logger.LogInformation("---> Миграция БД...");
+                _Logger.LogInformation("Миграция БД...");
                 _Db.Database.Migrate();
-                _Logger.LogInformation($"---> Миграция БД выполнена за {timer.Elapsed.TotalSeconds} c.");
+                _Logger.LogInformation($"Миграция БД выполнена за {timer.Elapsed.TotalSeconds} c.");
             }
             else
-                _Logger.LogInformation("---> БД в актуальном состоянии.");
+                _Logger.LogInformation("БД в актуальном состоянии.");
 
             try
             {
@@ -48,7 +51,7 @@ namespace WebStore.Services.Data
             }
             catch (Exception e)
             {
-                _Logger.LogError(e, "---> Ошибка инициализации товаров в БД.");
+                _Logger.LogError(e, "Ошибка инициализации товаров в БД.");
                 throw;
             }
 
@@ -58,11 +61,21 @@ namespace WebStore.Services.Data
             }
             catch (Exception e)
             {
-                _Logger.LogError(e, "---> Ошибка инициализации системы Identity");
+                _Logger.LogError(e, "Ошибка инициализации системы Identity");
                 throw;
             }
 
-            _Logger.LogInformation($"---> Инициализация БД завершена за {timer.Elapsed.TotalSeconds} c.");
+            try
+            {
+                InitializeEmployees();
+            }
+            catch (Exception e)
+            {
+                _Logger.LogError(e, "Ошибка инициализации сотрудников в БД.");
+                throw;
+            }
+
+            _Logger.LogInformation($"Инициализация БД завершена за {timer.Elapsed.TotalSeconds} c.");
         }
 
         private void InitializeProducts()
@@ -70,17 +83,17 @@ namespace WebStore.Services.Data
             var timer = Stopwatch.StartNew();
             if (_Db.Products.Any())
             {
-                _Logger.LogInformation("---> Инициализация товаров не требуется.");
+                _Logger.LogInformation("Инициализация товаров не требуется.");
                 return;
             }
 
-            _Logger.LogInformation("---> Инициализация товаров...");
+            _Logger.LogInformation("Инициализация товаров...");
 
-            ConvertData();
+            ConvertProductData();
 
             using (_Db.Database.BeginTransaction())
             {
-                _Logger.LogInformation("---> Добавление данных в БД...");
+                _Logger.LogInformation("Добавление данных в БД...");
                 _Db.Products.AddRange(TestData.Products);
                 _Db.Brands.AddRange(TestData.Brands);
                 _Db.Sections.AddRange(TestData.Sections);
@@ -88,7 +101,7 @@ namespace WebStore.Services.Data
                 _Db.SaveChanges();
 
                 _Db.Database.CommitTransaction();
-                _Logger.LogInformation($"---> Добавление данных в БД завершено за {timer.Elapsed.TotalSeconds} c.");
+                _Logger.LogInformation($"Добавление данных в БД завершено за {timer.Elapsed.TotalSeconds} c.");
             }
         }
 
@@ -130,9 +143,31 @@ namespace WebStore.Services.Data
             }
         }
 
-        private void ConvertData()
+        private void InitializeEmployees()
         {
-            _Logger.LogInformation("---> Исправление данных...");
+            var timer = Stopwatch.StartNew();
+            if (_Db.Employees.Any())
+            {
+                _Logger.LogInformation("Инициализация сотрудников не требуется.");
+                return;
+            }
+
+            _Logger.LogInformation("Инициализация сотрудников...");
+
+            TestData.Employees.ForEach(e => e.Id = 0);
+
+            _Logger.LogInformation("Добавление сотрудников в БД...");
+
+            _Db.AddRange(TestData.Employees);
+            
+            _Db.SaveChanges();
+
+            _Logger.LogInformation($"Добавление данных в БД завершено за {timer.Elapsed.TotalSeconds} с.");
+        }
+
+        private void ConvertProductData()
+        {
+            _Logger.LogInformation("Исправление данных...");
 
             var timer = Stopwatch.StartNew();
 
@@ -166,7 +201,7 @@ namespace WebStore.Services.Data
             foreach (var brand in TestData.Brands)
                 brand.Id = 0;
 
-            _Logger.LogInformation($"---> Исправление данных завершено за {timer.Elapsed.TotalSeconds} c.");
+            _Logger.LogInformation($"Исправление данных завершено за {timer.Elapsed.TotalSeconds} c.");
         }
     }
 }

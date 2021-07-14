@@ -142,6 +142,37 @@ namespace WebStore.DAL.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("WebStore.Domain.Entities.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EmploymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MIN")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("WebStore.Domain.Entities.Identity.Role", b =>
                 {
                     b.Property<string>("Id")
@@ -438,7 +469,7 @@ namespace WebStore.DAL.Migrations
             modelBuilder.Entity("WebStore.Domain.Entities.Product", b =>
                 {
                     b.HasOne("WebStore.Domain.Entities.Brand", "Brand")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("BrandId");
 
                     b.HasOne("WebStore.Domain.Entities.Section", "Section")
@@ -459,11 +490,6 @@ namespace WebStore.DAL.Migrations
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("WebStore.Domain.Entities.Brand", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("WebStore.Domain.Entities.Order", b =>

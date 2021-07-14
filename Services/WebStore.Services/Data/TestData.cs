@@ -44,7 +44,7 @@ namespace WebStore.Services.Data
             Enumerable.Range(1, 10).Select(b => new Brand
             {
                 Id = b,
-                Name = $"Брэнд-{b}",
+                Name = $"Бренд-{b}",
                 Order = __Rand.Next(30)
             })
         );

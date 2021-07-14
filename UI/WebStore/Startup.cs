@@ -1,20 +1,22 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using System;
-using Microsoft.AspNetCore.Identity;
-using WebStore.DAL.Context;
+
 using WebStore.Domain.Entities.Identity;
+using WebStore.Infrastructure;
 using WebStore.Interfaces.Services;
 using WebStore.Interfaces.TestAPI;
-using WebStore.Services.Data;
+using WebStore.Services;
 using WebStore.Services.InCookies;
-using WebStore.Services.InMemory;
-using WebStore.Services.InSQL;
+using WebStore.WebAPI.Clients.Employees;
+using WebStore.WebAPI.Clients.Identity;
+using WebStore.WebAPI.Clients.Orders;
+using WebStore.WebAPI.Clients.Products;
 using WebStore.WebAPI.Clients.Values;
 
 namespace WebStore
@@ -27,30 +29,10 @@ namespace WebStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var dbSource = _Configuration["DBSource"];
-
-            services.AddRazorPages().AddRazorRuntimeCompilation();
-            services.AddControllersWithViews();
-
-            switch (dbSource)
-            {
-                case "SQLite":
-                    services.AddDbContext<WebStoreDB>(opt => opt.UseSqlite(_Configuration.GetConnectionString("SQLite"),
-                        o => o.MigrationsAssembly("WebStore.DAL.Sqlite")));
-                    break;
-                case "MSSqlServer":
-                    services.AddDbContext<WebStoreDB>(opt =>
-                        opt.UseSqlServer(_Configuration.GetConnectionString("MSSqlServer")));
-                    break;
-            }
-
-            services.AddTransient<IEmployeesData, InMemoryEmployeesData>();
+            
             services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<WebStoreDB>()
+                .AddIdentityWebStoreAPIClients()
                 .AddDefaultTokenProviders();
-
-            services.AddScoped<ICartService, InCookiesCartService>();
-            services.AddHttpClient<IValuesService, ValuesClient>(opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]));
 
             services.Configure<IdentityOptions>(opt =>
             {
@@ -70,7 +52,6 @@ namespace WebStore
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             });
-
             services.ConfigureApplicationCookie(opt =>
             {
                 opt.Cookie.Name = "WebStore38r";
@@ -85,23 +66,24 @@ namespace WebStore
                 opt.SlidingExpiration = true;
             });
 
-            if (_Configuration["DataSource"].ToLower() == "db")
-            {
-                services.AddTransient<WebStoreDBInitializer>();
-                services.AddScoped<IOrderService, SqlOrderData>();
-                services.AddScoped<IProductData, SqlProductData>();
-            }
-            else if (_Configuration["DataSource"].ToLower() == "memory")
-                services.AddSingleton<IProductData, InMemoryProductData>();
-            else
-                throw new Exception("Не выбран источник данных.");
+
+            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
+
+            //services.AddScoped<ICartService, InCookiesCartService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartStore, InCookiesCartStore>();
+
+            services.AddHttpClient("WebStoreAPI", opt => opt.BaseAddress = new Uri(_Configuration["WebAPI"]))
+                .AddTypedClient<IValuesService, ValuesClient>()
+                .AddTypedClient<IEmployeesData, EmployeesClient>()
+                .AddTypedClient<IProductData, ProductsClient>()
+                .AddTypedClient<IOrderService, OrdersClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, ILoggerFactory logger*/)
         {
-            if (_Configuration["DataSource"].ToLower() == "db")
-                using (var scope = services.CreateScope())
-                    scope.ServiceProvider.GetRequiredService<WebStoreDBInitializer>().Initialize();
+            //logger.AddLog4Net();
 
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -110,6 +92,8 @@ namespace WebStore
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
@@ -122,11 +106,6 @@ namespace WebStore
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
-                    );
-
-                endpoints.MapControllerRoute(
-                    name: "employees",
-                    pattern: "{controller=Employees}/{action=Index}/{id?}"
                     );
             });
         }

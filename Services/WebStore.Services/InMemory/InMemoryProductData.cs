@@ -8,11 +8,16 @@ using WebStore.Services.Data;
 
 namespace WebStore.Services.InMemory
 {
+    [Obsolete("Поддержка прекращена", true)]
     public class InMemoryProductData : IProductData
     {
         public IEnumerable<Section> GetSections() => TestData.Sections;
 
+        public Section GetSection(int id) => GetSections().FirstOrDefault(s => s.Id == id);
+
         public IEnumerable<Brand> GetBrands() => TestData.Brands;
+
+        public Brand GetBrand(int id) => GetBrands().FirstOrDefault(b => b.Id == id);
 
         public IEnumerable<Product> GetProducts(ProductFilter filter = null)
         {
@@ -32,7 +37,7 @@ namespace WebStore.Services.InMemory
             return query;
         }
 
-        public Product GetProductById(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);
+        public Product GetProduct(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);
 
         public int Add(Product product)
         {
@@ -60,9 +65,9 @@ namespace WebStore.Services.InMemory
             return TestData.Products.Remove(product);
         }
 
-        public bool RemoveById(int id)
+        public bool Remove(int id)
         {
-            var product = GetProductById(id);
+            var product = GetProduct(id);
 
             return Remove(product);
         }

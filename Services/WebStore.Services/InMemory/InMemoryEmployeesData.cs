@@ -7,6 +7,7 @@ using WebStore.Services.Data;
 
 namespace WebStore.Services.InMemory
 {
+    [Obsolete("Поддержка прекращена", true)]
     public class InMemoryEmployeesData : IEmployeesData
     {
         private int _CurrentMaxId;

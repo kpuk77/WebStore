@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using WebStore.Domain.Entities.Identity;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
@@ -44,7 +45,7 @@ namespace WebStore.Controllers
                 return View(new EmployeeViewModel());
 
             var employee = _Employees.Get((int)id);
-            
+
             if (employee is null)
                 return NotFound();
 
@@ -62,11 +63,15 @@ namespace WebStore.Controllers
             var employee = model.ToModel();
 
             if (model.Id == 0)
-                _Employees.Add(employee);
+            {
+                var id = _Employees.Add(employee);
+                _Logger.LogInformation($"---> Добавлен новый сотрудник: {employee.Name} id: {id}");
+            }
             else
+            {
                 _Employees.Update(employee);
-
-            _Logger.LogInformation($"---> Сохранение изменений: {employee.Name} id: {employee.Id}");
+                _Logger.LogInformation($"---> Сохранение изменений: {employee.Name} id: {employee.Id}");
+            }
 
             return RedirectToAction("Index");
         }
