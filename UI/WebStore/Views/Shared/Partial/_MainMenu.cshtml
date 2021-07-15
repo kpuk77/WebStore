@@ -11,10 +11,10 @@
             </ul>
         </li>
         <li class="dropdown">
-            <a href="#">Блог<i class="fa fa-angle-down"></i></a>
+            <a ws-is-active-route ws-ignore-action asp-controller="Blog">Блог<i class="fa fa-angle-down"></i></a>
             <ul role="menu" class="sub-menu">
-                <li><a ws-is-active-route asp-controller="Home" asp-action="Blog">Список блогов</a></li>
-                <li><a ws-is-active-route asp-controller="Home" asp-action="BlogSingle">Блог магазина</a></li>
+                <li><a ws-is-active-route asp-controller="Blog" asp-action="Index">Список блогов</a></li>
+                <li><a ws-is-active-route asp-controller="Blog" asp-action="Single">Блог магазина</a></li>
             </ul>
         </li>
         <li><a ws-is-active-route asp-controller="Errors" asp-action="Index">404</a></li>
