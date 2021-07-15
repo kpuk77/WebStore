@@ -2516,6 +2516,10 @@ h2.title {
 .contact-info .social-networks ul li a:hover {
     color: #FE980F;
 }
+
+.panel-body ul li.active a {
+    color: #fdb45e;
+}
 @charset "UTF-8";
 /*
 Animate.css - http://daneden.me/animate
