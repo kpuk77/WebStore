@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Linq;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Moq;
+
 using WebStore.Controllers;
 using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
+
 using Assert = Xunit.Assert;
 
 namespace WebStore.Tests.Controllers
@@ -24,27 +28,6 @@ namespace WebStore.Tests.Controllers
             var controller = new HomeController();
             var result = controller.Index(productData.Object);
 
-            Assert.IsType<ViewResult>(result);
-        }
-
-        [TestMethod]
-        public void BlogReturnsView()
-        {
-            //  Arrange - Подготовка
-            var controller = new HomeController();
-
-            //  Act - Действие
-            var result = controller.Blog();
-
-            //  Assert - Утверждение
-            Assert.IsType<ViewResult>(result);
-        }
-
-        [TestMethod]
-        public void BlogSingleReturnsView()
-        {
-            var controller = new HomeController();
-            var result = controller.BlogSingle();
             Assert.IsType<ViewResult>(result);
         }
 
