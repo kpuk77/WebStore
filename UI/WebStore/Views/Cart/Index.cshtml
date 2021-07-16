@@ -3,12 +3,9 @@
 
 <section id="cart_items">
     <div class="container">
-        <div class="breadcrumbs">
-            <ol class="breadcrumb">
-                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                <li class="active">Shopping Корзина</li>
-            </ol>
-        </div>
+
+        <vc:bread-crumbs />
+
         <div class="table-responsive cart_info">
             <table class="table table-condensed">
                 <thead>
@@ -24,34 +21,33 @@
                 <tbody>
                     @foreach (var (product, quantity) in Model.Cart.Items)
                     {
-                        <tr>
-                            <td class="cart_product">
-                                <a a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id"><img src="@product.ImageUrl" alt=""></a>
-                            </td>
-                            <td class="cart_description">
-                                <h4><a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id">@product.Name</a></h4>
-                                <p>@product.Id.ToString("000000")</p>
-                            </td>
-                            <td class="cart_price">
-                                <p>@product.Price.ToString("C")</p>
-                            </td>
-                            <td class="cartService_quantity">
-                                <div class="cart_quantity_button">
-                                    <a asp-controller="Cart" asp-action="Decrement" asp-route-id="@product.Id" class="cartService_quantity_down"> - </a>
-                                    <input class="cart_quantity_input" type="text" name="quantity" value="@quantity" autocomplete="off" size="2">
-                                    <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" class="cartService_quantity_up"> + </a>
-                                </div>
-                            </td>
-                            <td class="cartService_total">
-                                <p class="cart_total_price">@product.Price.ToString("C")</p>
-                            </td>
-                            <td class="cart_delete">
-                                <a asp-controller="Cart" asp-action="Remove" asp-route-id="@product.Id" class="cartService_quantity_delete">
-                                    <i class="fa fa-times"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
+        <tr>
+            <td class="cart_product">
+                <a a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id"><img src="@product.ImageUrl" alt=""></a>
+            </td>
+            <td class="cart_description">
+                <h4><a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id">@product.Name</a></h4>
+                <p>@product.Id.ToString("000000")</p>
+            </td>
+            <td class="cart_price">
+                <p>@product.Price.ToString("C")</p>
+            </td>
+            <td class="cartService_quantity">
+                <div class="cart_quantity_button">
+                    <a asp-controller="Cart" asp-action="Decrement" asp-route-id="@product.Id" class="cartService_quantity_down"> - </a>
+                    <input class="cart_quantity_input" type="text" name="quantity" value="@quantity" autocomplete="off" size="2">
+                    <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" class="cartService_quantity_up"> + </a>
+                </div>
+            </td>
+            <td class="cartService_total">
+                <p class="cart_total_price">@product.Price.ToString("C")</p>
+            </td>
+            <td class="cart_delete">
+                <a asp-controller="Cart" asp-action="Remove" asp-route-id="@product.Id" class="cartService_quantity_delete">
+                    <i class="fa fa-times"></i>
+                </a>
+            </td>
+        </tr>}
                 </tbody>
             </table>
         </div>
@@ -65,6 +61,6 @@
             <p>Выберите, есть ли у вас код скидки или бонусные баллы, которые вы хотите использовать или хотите сделать скуидку на доставку.</p>
         </div>
         <partial name="Partial/_CheckOut" model="Model.Order"
-                 view-data="@(new ViewDataDictionary(ViewData) {{"TotalPrice", Model.Cart.TotalPrice}})"/>
+                 view-data="@(new ViewDataDictionary(ViewData) {{"TotalPrice", Model.Cart.TotalPrice}})" />
     </div>
 </section><!--/#do_action-->
