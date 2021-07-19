@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Moq;
 
 using WebStore.Controllers;
+using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
@@ -20,13 +23,15 @@ namespace WebStore.Tests.Controllers
         public void IndexReturnsViewWithCatalogViewModel()
         {
             var productData = new Mock<IProductData>();
-            //var productFilter = new Mock<ProductFilter>();
+            productData.Setup(opt => opt.GetProducts(It.IsAny<ProductFilter>()))
+                .Returns(() => new(new Mock<IEnumerable<Product>>().Object, It.IsAny<int>()));
+
             var configuration = new Mock<IConfiguration>();
             configuration.Setup(opt => opt["CatalogPageSize"]).Returns("3");
 
             var controller = new CatalogController(productData.Object, configuration.Object);
 
-            var result = controller.Index(It.IsAny<int>(), It.IsAny<int>());
+            var result = controller.Index(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>());
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.IsAssignableFrom<CatalogViewModel>(viewResult.Model);
         }
@@ -37,7 +42,7 @@ namespace WebStore.Tests.Controllers
             var productData = new Mock<IProductData>();
             var configuration = new Mock<IConfiguration>();
             configuration.Setup(opt => opt["CatalogPageSize"]).Returns("3");
-            
+
             var controller = new CatalogController(productData.Object, configuration.Object);
 
             var result = controller.Details(It.IsAny<int>());
