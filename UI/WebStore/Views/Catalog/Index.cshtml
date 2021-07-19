@@ -3,12 +3,6 @@
     ViewBag.Title = "Каталог";
 }
 
-@*<section id="advertisement">  Не видел этот банер, пока не отключил adblock )
-        <div class="container">
-            <img src="~/images/shop/advertisement.jpg" alt="" />
-        </div>
-    </section>*@
-
 <section>
     <div class="container">
         <vc:bread-crumbs/>
@@ -19,6 +13,12 @@
 
             <div class="col-sm-9 padding-right">
                 <partial name="Partial/_FeaturesItems" model="Model.Products"/>
+                
+                <paging page-view-model="Model.PageViewModel" 
+                        page-action="Index"
+                        page-url-sectionId="@Model.SectionId"
+                        page-url-brandId="@Model.BrandId"
+                        page-url-pageSize="@Context.Request.Query["PageSize"]"></paging>
             </div>
         </div>
     </div>
