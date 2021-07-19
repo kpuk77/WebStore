@@ -24,7 +24,7 @@ namespace WebStore.Areas.Admin.Controllers
             _ProductData = productData;
             _Logger = logger;
         }
-        public IActionResult Index() => View(_ProductData.GetProducts()/*.Take(10)*/);
+        public IActionResult Index() => View(_ProductData.GetProducts().Products/*.Take(10)*/);
 
         public IActionResult Edit(int id)
         {

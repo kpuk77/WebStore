@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Configuration;
 using WebStore.Domain;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
@@ -12,15 +12,24 @@ namespace WebStore.Controllers
     public class CatalogController : Controller
     {
         private readonly IProductData _ProductData;
+        private readonly IConfiguration _Configuration;
 
-        public CatalogController(IProductData productData) => _ProductData = productData;
-
-        public IActionResult Index(int? brandId, int? sectionId)
+        public CatalogController(IProductData productData, IConfiguration configuration)
         {
+            _ProductData = productData;
+            _Configuration = configuration;
+        }
+
+        public IActionResult Index(int? brandId, int? sectionId, int page = 1, int? pageSize = null)
+        {
+            pageSize ??= int.TryParse(_Configuration["CatalogPageSize"], out var size) ? size : 3;
+
             var filter = new ProductFilter
             {
                 BrandId = brandId,
                 SectionId = sectionId,
+                Page = page,
+                PageSize = pageSize
             };
 
             var products = _ProductData.GetProducts(filter);
@@ -29,7 +38,7 @@ namespace WebStore.Controllers
             {
                 SectionId = sectionId,
                 BrandId = brandId,
-                Products = products.OrderBy(p => p.Order).ToViewModels()
+                Products = products.Products.OrderBy(p => p.Order).ToViewModels()
             });
         }
 

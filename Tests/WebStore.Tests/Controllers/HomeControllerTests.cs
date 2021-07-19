@@ -8,6 +8,7 @@ using Moq;
 
 using WebStore.Controllers;
 using WebStore.Domain;
+using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
 
@@ -23,7 +24,7 @@ namespace WebStore.Tests.Controllers
         {
             var productData = new Mock<IProductData>();
             productData.Setup(s => s.GetProducts(It.IsAny<ProductFilter>()))
-                .Returns(Enumerable.Empty<Product>());
+                .Returns(new ProductsPage(Enumerable.Empty<Product>(), It.IsAny<int>()));
 
             var controller = new HomeController();
             var result = controller.Index(productData.Object);

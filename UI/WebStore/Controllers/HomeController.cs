@@ -11,7 +11,7 @@ namespace WebStore.Controllers
     {
         public IActionResult Index([FromServices]IProductData productData)
         {
-            var products = productData.GetProducts()
+            var products = productData.GetProducts().Products
                 .Take(9)
                 .Select(p => p.ToViewModel());
 

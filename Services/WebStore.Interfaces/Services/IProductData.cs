@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using WebStore.Domain;
 using WebStore.Domain.Entities;
 
@@ -14,7 +15,7 @@ namespace WebStore.Interfaces.Services
 
         Brand GetBrand(int id);
 
-        IEnumerable<Product> GetProducts(ProductFilter filter = null);
+        ProductsPage GetProducts(ProductFilter filter = null);
 
         Product GetProduct(int id);
 

@@ -25,10 +25,10 @@ namespace WebStore.WebAPI.Clients.Products
 
         public Brand GetBrand(int id) => Get<BrandDTO>($"{Address}/brands/{id}").FromDTO();
 
-        public IEnumerable<Product> GetProducts(ProductFilter filter = null)
+        public ProductsPage GetProducts(ProductFilter filter = null)
         {
             var response = Post(Address, filter ?? new ProductFilter());
-            var products = response.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>().Result;
+            var products = response.Content.ReadFromJsonAsync<ProductsPageDTO>().Result;
 
             return products.FromDTO();
         }
@@ -39,7 +39,7 @@ namespace WebStore.WebAPI.Clients.Products
         {
             var response = Post($"{Address}/add", product);
 
-            return GetProducts().Select(s => s.Id).Max();
+            return GetProducts().Products.Select(s => s.Id).Max();
         }
         
         public bool Remove(int id) => Delete($"{Address}/{id}").IsSuccessStatusCode;

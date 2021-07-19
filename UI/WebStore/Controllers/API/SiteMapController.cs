@@ -29,7 +29,7 @@ namespace WebStore.Controllers.API
             nodes.AddRange(productData.GetBrands()
                 .Select(b => new SitemapNode(Url.Action("Index", "Catalog", new {brandId = b.Id}))));
 
-            nodes.AddRange(productData.GetProducts()
+            nodes.AddRange(productData.GetProducts().Products
                 .Select(p => new SitemapNode(Url.Action("Index", "Catalog", new {productId = p.Id}))));
 
             return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));
