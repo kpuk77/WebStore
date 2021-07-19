@@ -25,25 +25,45 @@
             <td class="cart_product">
                 <a a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id"><img src="@product.ImageUrl" alt=""></a>
             </td>
+
             <td class="cart_description">
                 <h4><a asp-controller="Catalog" asp-action="Details" asp-route-id="@product.Id">@product.Name</a></h4>
                 <p>@product.Id.ToString("000000")</p>
             </td>
-            <td class="cart_price">
+
+            <td class="cart_price" data-price="@product.Price">
                 <p>@product.Price.ToString("C")</p>
             </td>
+
             <td class="cartService_quantity">
                 <div class="cart_quantity_button">
-                    <a asp-controller="Cart" asp-action="Decrement" asp-route-id="@product.Id" class="cartService_quantity_down"> - </a>
+
+                    <a asp-controller="Cart" asp-action="Decrement" asp-route-id="@product.Id"
+                       class="cartService_quantity_down"
+                       data-id="@product.Id">
+                         -
+                    </a>
+
                     <input class="cart_quantity_input" type="text" name="quantity" value="@quantity" autocomplete="off" size="2">
-                    <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" class="cartService_quantity_up"> + </a>
+
+                    <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id"
+                       class="cartService_quantity_up"
+                       data-id="@product.Id">
+                         +
+                    </a>
+
                 </div>
             </td>
-            <td class="cartService_total">
-                <p class="cart_total_price">@product.Price.ToString("C")</p>
+
+            <td class="cartService_total"
+                data-price="@(product.Price * quantity)">
+                <p class="cart_total_price">@((product.Price * quantity).ToString("C"))</p>
             </td>
+
             <td class="cart_delete">
-                <a asp-controller="Cart" asp-action="Remove" asp-route-id="@product.Id" class="cartService_quantity_delete">
+                <a asp-controller="Cart" asp-action="Remove" asp-route-id="@product.Id"
+                   data-id="@product.Id"
+                   class="cartService_quantity_delete">
                     <i class="fa fa-times"></i>
                 </a>
             </td>
