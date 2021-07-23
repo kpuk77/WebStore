@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using System.IO;
 using System.Linq;
 
 using WebStore.Domain.Entities;
@@ -18,13 +21,16 @@ namespace WebStore.Areas.Admin.Controllers
     {
         private readonly IProductData _ProductData;
         private readonly ILogger<ProductsController> _Logger;
+        private readonly IWebHostEnvironment _Environment;
 
-        public ProductsController(IProductData productData, ILogger<ProductsController> logger)
+        public ProductsController(IProductData productData, ILogger<ProductsController> logger, IWebHostEnvironment environment)
         {
             _ProductData = productData;
             _Logger = logger;
+            _Environment = environment;
         }
-        public IActionResult Index() => View(_ProductData.GetProducts().Products/*.Take(10)*/);
+
+        public IActionResult Index() => View(_ProductData.GetProducts().Products);
 
         public IActionResult Edit(int id)
         {
@@ -38,7 +44,7 @@ namespace WebStore.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(ProductViewModel model)
+        public IActionResult Edit(ProductViewModel model, IFormFile file)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -54,8 +60,18 @@ namespace WebStore.Areas.Admin.Controllers
             product.Name = model.Name.Trim();
             product.Section = section ??= new Section { Name = model.Section.Trim() };
             product.Brand = model.Brand is null ? null : brand ??= new Brand { Name = model.Brand.Trim() };
-            product.ImageUrl = model.ImageUrl.Trim();
             product.Price = model.Price;
+
+            if (file is { })
+            {
+                var filePath = "/images/" + file.FileName;
+                using var fs = new FileStream(_Environment.WebRootPath + filePath, FileMode.Create);
+                file.CopyTo(fs);
+
+                product.ImageUrl = filePath;
+            }
+            else
+                product.ImageUrl = model.ImageUrl.Trim();
 
             _ProductData.Update(product);
 
@@ -72,7 +88,6 @@ namespace WebStore.Areas.Admin.Controllers
 
             return View(product.ToViewModel());
         }
-
 
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)

@@ -4,7 +4,7 @@
 }
 
 <div class="container">
-    <form class="col-sm-8" asp-action="Edit">
+    <form class="col-sm-8" asp-action="Edit" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="form-group">
@@ -23,8 +23,9 @@
             <label asp-for="ImageUrl" class="control-label"></label>
             <input asp-for="ImageUrl" class="form-control" />
             <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            <input class="btn" type="file" name="file" />
         </div>
-
+        
         <div class="form-group">
             <label asp-for="Section" class="control-label"></label>
             <input asp-for="Section" class="form-control" />
