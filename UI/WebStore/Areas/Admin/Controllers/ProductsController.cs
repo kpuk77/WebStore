@@ -6,7 +6,8 @@ using Microsoft.Extensions.Logging;
 
 using System.IO;
 using System.Linq;
-
+using Microsoft.Extensions.Configuration;
+using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Domain.ViewModels;
@@ -22,15 +23,43 @@ namespace WebStore.Areas.Admin.Controllers
         private readonly IProductData _ProductData;
         private readonly ILogger<ProductsController> _Logger;
         private readonly IWebHostEnvironment _Environment;
+        private readonly IConfiguration _Configuration;
 
-        public ProductsController(IProductData productData, ILogger<ProductsController> logger, IWebHostEnvironment environment)
+        public ProductsController(IProductData productData, ILogger<ProductsController> logger, IWebHostEnvironment environment, IConfiguration configuration)
         {
             _ProductData = productData;
             _Logger = logger;
             _Environment = environment;
+            _Configuration = configuration;
         }
 
-        public IActionResult Index() => View(_ProductData.GetProducts().Products);
+        public IActionResult Index(int? brandId, int? sectionId, int page = 1, int? pageSize = null)
+        {
+            pageSize ??= int.TryParse(_Configuration["AdminProductPageSize"], out var size) ? size : 10;
+
+            var filter = new ProductFilter
+            {
+                BrandId = brandId,
+                SectionId = sectionId,
+                Page = page,
+                PageSize = pageSize
+            };
+
+            var (products, totalCount) = _ProductData.GetProducts(filter);
+
+            return View(new CatalogViewModel
+            {
+                SectionId = sectionId,
+                BrandId = brandId,
+                Products = products.OrderBy(p => p.Order).ToViewModels(),
+                PageViewModel = new PageViewModel
+                {
+                    Page = page,
+                    PageSize = pageSize ?? 0,
+                    TotalItems = totalCount
+                }
+            });
+        }
 
         public IActionResult Edit(int id)
         {

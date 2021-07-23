@@ -32,18 +32,35 @@ namespace WebStore.TagHelpers
             ul.AddCssClass("pagination");
 
             var urlHelper = _UrlHelperFactory.GetUrlHelper(ViewContext);
-            for (int i = 1; i <= PageViewModel.TotalPages; i++)
-                ul.InnerHtml.AppendHtml(CreateElement(i, urlHelper));
+
+            //for (int i = 1; i <= PageViewModel.TotalPages; i++)
+            //    ul.InnerHtml.AppendHtml(CreateElement(i, urlHelper));
+            var page = PageViewModel.Page;
+            var total = PageViewModel.TotalPages;
+
+            if (page >= 3)
+                ul.InnerHtml.AppendHtml(CreateElement(1, urlHelper, "Первая"));
+
+            if (page - 1 >= 1)
+                ul.InnerHtml.AppendHtml(CreateElement(page - 1, urlHelper));
+
+            ul.InnerHtml.AppendHtml(CreateElement(page, urlHelper));
+
+            if (page + 1 <= total)
+                ul.InnerHtml.AppendHtml(CreateElement(page + 1, urlHelper));
+
+            if (page + 2 <= total)
+                ul.InnerHtml.AppendHtml(CreateElement(total, urlHelper, "Последняя"));
 
             output.Content.AppendHtml(ul);
         }
 
-        private TagBuilder CreateElement(int pageNumber, IUrlHelper url)
+        private TagBuilder CreateElement(int pageNumber, IUrlHelper url, string text = null)
         {
             var li = new TagBuilder("li");
             var a = new TagBuilder("a");
 
-            if(pageNumber == PageViewModel.Page)
+            if (pageNumber == PageViewModel.Page)
                 li.AddCssClass("active");
             else
             {
@@ -51,8 +68,9 @@ namespace WebStore.TagHelpers
                 a.Attributes["href"] = url.Action(PageAction, PageUrlValues);
             }
 
-            a.InnerHtml.AppendHtml(pageNumber.ToString());
+            a.InnerHtml.AppendHtml(text ?? pageNumber.ToString());
             li.InnerHtml.AppendHtml(a);
+
             return li;
         }
     }

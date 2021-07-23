@@ -1,14 +1,14 @@
-﻿@model IEnumerable<WebStore.Domain.Entities.Product>
+﻿@model WebStore.Domain.ViewModels.CatalogViewModel
 
 @{
     ViewBag.Title = "Товары";
 }
 
-<div class="container">
-    <div class="navbar-fixed-top" style="margin: 20px">
-        <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-primary">Вернуться назад</a>
-    </div>
+<div class="navbar-fixed-top" style="margin: 20px">
+    <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-primary"><i class="fa fa-backward"></i></a>
+</div>
 
+<div class="container">
 
     <table class="table">
         <thead class="header_top">
@@ -24,7 +24,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in Model.Take(10))
+            @foreach (var product in Model.Products)
             {
                 <tr>
                     <td>
@@ -38,8 +38,8 @@
                     </td>
                     <td>@product.Id</td>
                     <td>@product.Name</td>
-                    <td>@product.Brand?.Name</td>
-                    <td>@product.Section.Name</td>
+                    <td>@product.Brand?</td>
+                    <td>@product.Section</td>
                     <td><img src="@product.ImageUrl" /></td>
                     <td>@product.Price</td>
                     <td>
@@ -55,4 +55,11 @@
             }
         </tbody>
     </table>
+    <div class="text-center">
+        <paging page-view-model="Model.PageViewModel"
+                page-action="Index"
+                page-url-sectionId="@Model.SectionId"
+                page-url-brandId="@Model.BrandId"
+                page-url-pageSize="@Context.Request.Query["PageSize"]"></paging>
+    </div>
 </div>
