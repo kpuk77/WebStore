@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<WebStore.Domain.ViewModels.SectionViewModel>
+@{
+    var sectionId = ViewBag.SectionId;
+    var parentId = ViewBag.ParentId;
+}
 
 <h2>Категории</h2>
 <div class="panel-group category-products" id="accordian">
@@ -17,16 +21,16 @@
                         </a>
                     </h4>
                 </div>
-                <div id="@parentSection.GetHashCode()" class="panel-collapse collapse">
+                <div id="@parentSection.GetHashCode()" class="panel-collapse collapse @(parentSection.Id == parentId ? "in" : null)">
                     <div class="panel-body">
                         <ul>
                             @foreach (var childSection in parentSection.ChildSections)
                             {
-                                <li>
+                                <li @(childSection.Id == sectionId ? "class=active" : null)>
                                     <a asp-controller="Catalog"
                                        asp-action="Index"
                                        asp-route-sectionId="@childSection.Id">
-                                        @childSection.Name
+                                        @(childSection.Id == sectionId ? ">" : null) @childSection.Name
                                     </a>
                                 </li>
                             }

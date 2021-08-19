@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WebStore.Domain;
 using WebStore.Domain.DTO.Products;
 
 namespace WebStore.Services.Mapping.DTO.Products
@@ -37,5 +38,10 @@ namespace WebStore.Services.Mapping.DTO.Products
 
         public static IEnumerable<ProductDTO> ToDTO(this IEnumerable<Domain.Entities.Product> products) =>
             products.Select(ToDTO);
+
+        public static ProductsPageDTO ToDTO(this ProductsPage productsPage) => new ProductsPageDTO(productsPage.Products.ToDTO(), productsPage.TotalCount);
+
+        public static ProductsPage FromDTO(this ProductsPageDTO productsPageDTO) =>
+            new ProductsPage(productsPageDTO.Products.FromDTO(), productsPageDTO.TotalCount);
     }
 }

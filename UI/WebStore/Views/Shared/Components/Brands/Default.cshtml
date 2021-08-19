@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<WebStore.Domain.ViewModels.BrandViewModel>
+@{
+    var brandId = ViewBag.BrandId;
+}
 
 <div class="brands_products">
     <!--brands_products-->
@@ -7,11 +10,14 @@
         <ul class="nav nav-pills nav-stacked">
             @foreach (var brand in Model)
             {
-                <li><a asp-controller="Catalog"
+                <li @(brand.Id == brandId ? "class=active" : null)>
+                    <a asp-controller="Catalog"
                        asp-action="Index"
                        asp-route-brandId="@brand.Id">
-                    <span class="pull-right">(@*TODO: количество продуктов в данном бренде*@)</span>@brand.Name
-                </a></li>
+                        <span class="pull-right">(@*TODO: количество продуктов в данном бренде*@)</span>
+                        @(brand.Id == brandId ? ">" : null) @brand.Name
+                    </a>
+                </li>
             }
         </ul>
     </div>

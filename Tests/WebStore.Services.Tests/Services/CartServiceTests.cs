@@ -1,12 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Moq;
+
 using System.Collections.Generic;
 using System.Linq;
-using Moq;
+
 using WebStore.Domain;
 using WebStore.Domain.Entities;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
+
 using Assert = Xunit.Assert;
 
 namespace WebStore.Services.Tests.Services
@@ -37,11 +40,11 @@ namespace WebStore.Services.Tests.Services
             _CartStoreMock.Setup(opt => opt.Cart).Returns(_Cart);
 
             _ProductDataMock = new Mock<IProductData>();
-            _ProductDataMock.Setup(opt => opt.GetProducts(It.IsAny<ProductFilter>())).Returns(() => new[]
+            _ProductDataMock.Setup(opt => opt.GetProducts(It.IsAny<ProductFilter>())).Returns(() => new ProductsPage(new[]
             {
                 new Product {Id = 1, Name = "Product 1", ImageUrl = "imageUrl 1", Price = 1, Section = new Section{Id = 1, Name = "Section 1", Order = 1}},
                 new Product {Id = 2, Name = "Product 2", ImageUrl = "imageUrl 2", Price = 2, Section = new Section{Id = 2, Name = "Section 2", Order = 2}}
-            });
+            }, 2));
             _CartService = new CartService(_CartStoreMock.Object, _ProductDataMock.Object);
         }
 

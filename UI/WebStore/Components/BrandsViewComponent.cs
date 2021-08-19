@@ -12,7 +12,14 @@ namespace WebStore.Components
 
         public BrandsViewComponent(IProductData productData) => _ProductData = productData;
 
-        public IViewComponentResult Invoke() => View(GetBrands());
+        public IViewComponentResult Invoke(string brandId)
+        {
+            int.TryParse(brandId, out int id);
+
+            ViewBag.BrandId = id;
+
+            return View(GetBrands());
+        }
 
         private IEnumerable<BrandViewModel> GetBrands() =>
             _ProductData

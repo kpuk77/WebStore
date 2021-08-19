@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebStore.Domain;
+using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
 using WebStore.Services.Data;
@@ -19,7 +20,7 @@ namespace WebStore.Services.InMemory
 
         public Brand GetBrand(int id) => GetBrands().FirstOrDefault(b => b.Id == id);
 
-        public IEnumerable<Product> GetProducts(ProductFilter filter = null)
+        public ProductsPage GetProducts(ProductFilter filter = null)
         {
             IEnumerable<Product> query = TestData.Products;
 
@@ -34,7 +35,9 @@ namespace WebStore.Services.InMemory
                     query = query.Where(p => p.BrandId == brandId);
             }
 
-            return query;
+            var totalCount = query.Count();
+
+            return new ProductsPage(query, totalCount);
         }
 
         public Product GetProduct(int id) => TestData.Products.FirstOrDefault(p => p.Id == id);

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Moq;
+
+using System.Collections.Generic;
 
 using WebStore.Controllers;
 using WebStore.Domain;
@@ -20,11 +23,15 @@ namespace WebStore.Tests.Controllers
         public void IndexReturnsViewWithCatalogViewModel()
         {
             var productData = new Mock<IProductData>();
-            var productFilter = new Mock<ProductFilter>();
+            productData.Setup(opt => opt.GetProducts(It.IsAny<ProductFilter>()))
+                .Returns(() => new(new Mock<IEnumerable<Product>>().Object, It.IsAny<int>()));
 
-            var controller = new CatalogController(productData.Object);
+            var configuration = new Mock<IConfiguration>();
+            configuration.Setup(opt => opt["CatalogPageSize"]).Returns("3");
 
-            var result = controller.Index(It.IsAny<int>(), It.IsAny<int>());
+            var controller = new CatalogController(productData.Object, configuration.Object);
+
+            var result = controller.Index(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>());
             var viewResult = Assert.IsType<ViewResult>(result);
             Assert.IsAssignableFrom<CatalogViewModel>(viewResult.Model);
         }
@@ -33,7 +40,10 @@ namespace WebStore.Tests.Controllers
         public void DetailsNullResultReturnsNotFound()
         {
             var productData = new Mock<IProductData>();
-            var controller = new CatalogController(productData.Object);
+            var configuration = new Mock<IConfiguration>();
+            configuration.Setup(opt => opt["CatalogPageSize"]).Returns("3");
+
+            var controller = new CatalogController(productData.Object, configuration.Object);
 
             var result = controller.Details(It.IsAny<int>());
             Assert.IsType<NotFoundResult>(result);
@@ -47,8 +57,11 @@ namespace WebStore.Tests.Controllers
             const string EXPECTED_IMAGE_URL = "Test image url";
             const decimal EXPECTED_PRICE = 9;
 
-            var productData = new Mock<IProductData>();
             var section = new Mock<Section>();
+            var configuration = new Mock<IConfiguration>();
+            configuration.Setup(opt => opt["CatalogPageSize"]).Returns("3");
+
+            var productData = new Mock<IProductData>();
             productData.Setup(opt => opt.GetProduct(It.IsAny<int>())).Returns(new Product
             {
                 Id = EXPECTED_ID,
@@ -58,7 +71,7 @@ namespace WebStore.Tests.Controllers
                 Section = section.Object
             });
 
-            var controller = new CatalogController(productData.Object);
+            var controller = new CatalogController(productData.Object, configuration.Object);
 
             var result = controller.Details(It.IsAny<int>());
             var viewResult = Assert.IsType<ViewResult>(result);

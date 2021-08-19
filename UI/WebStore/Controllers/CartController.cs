@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
 
@@ -66,5 +67,39 @@ namespace WebStore.Controllers
             ViewBag.OrderId = id;
             return View();
         }
+
+        #region Web-API
+
+        public IActionResult GetCartView() => ViewComponent("Cart");
+
+        public IActionResult AddAPI(int id)
+        {
+            _CartService.Add(id);
+
+            return Ok(new { id, message = $"Товар с id: {id} добавлен в корзину" });
+        }
+
+        public IActionResult DecrementAPI(int id)
+        {
+            _CartService.Decrement(id);
+
+            return Ok(new { id, message = $"Товар с id: {id} удален из корзины" });
+        }
+
+        public IActionResult RemoveAPI(int id)
+        {
+            _CartService.Remove(id);
+
+            return Ok(new { id, message = $"Товар с id: {id} удален из корзины" });
+        }
+
+        public IActionResult ClearAPI()
+        {
+            _CartService.Clear();
+
+            return Ok(new { message = "Корзина очищена" });
+        }
+
+        #endregion
     }
 }

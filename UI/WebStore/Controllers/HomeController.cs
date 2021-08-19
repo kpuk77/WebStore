@@ -11,15 +11,13 @@ namespace WebStore.Controllers
     {
         public IActionResult Index([FromServices]IProductData productData)
         {
-            var products = productData.GetProducts()
+            var products = productData.GetProducts().Products
                 .Take(9)
                 .Select(p => p.ToViewModel());
 
             return View(products);
         }
-
-        public IActionResult Blog() => View();
-        public IActionResult BlogSingle() => View();
+        
         public IActionResult Checkout() => View();
         public IActionResult ContactUs() => View();
     }
